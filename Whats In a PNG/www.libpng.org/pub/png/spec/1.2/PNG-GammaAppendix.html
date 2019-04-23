@@ -1,0 +1,462 @@
+<!doctype html public "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<html lang="en">
+
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-GammaAppendix.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+<head>
+
+<TITLE>PNG Specification: Gamma Tutorial</TITLE>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+
+
+
+
+
+
+
+
+<h1>PNG (Portable Network Graphics) Specification, Version 1.2</h1>
+
+
+
+<hr>
+<a href="PNG-Rationale.html">Previous page</a>
+<br>
+<a href="PNG-ColorAppendix.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+
+<h2><a name="GammaAppendix">13. Appendix: Gamma Tutorial</a></h2>
+
+<p>(This appendix is not part of the formal PNG specification.)
+
+<h3><a name="GT.transfer">13.1. Nonlinear transfer functions</a></h3>
+
+<p>It would be convenient for graphics programmers if all of the
+components of an imaging system were linear.  The voltage coming from
+an electronic camera would be directly proportional to the intensity
+(power) of light in the scene, the light emitted by a CRT would be
+directly proportional to its input voltage, and so on.  However,
+real-world devices do not behave in this way.  All CRT displays, almost
+all photographic film, and many electronic cameras have nonlinear
+signal-to-light-intensity or intensity-to-signal characteristics.
+
+<p>Fortunately, all of these nonlinear devices have a transfer function
+that is approximated fairly well by a single type of mathematical
+function: a power function.  This power function has the general
+equation
+
+<pre>
+   <code class=expr>output = input ^ exponent</code>
+</pre>
+
+<p>
+The exponent is often
+called "gamma" and denoted by the Greek letter gamma.
+
+<p>By convention, <code class=expr>input</code> and <code class=expr>output</code> are both scaled
+to the range 0
+to 1, with 0 representing black and 1 representing maximum white (or
+red, etc).  Normalized in this way, the power function is completely
+described by the exponent.
+
+<p>So, given a particular device, we can measure its output as a
+function of its input, fit a power function to this measured transfer
+function, and extract the exponent.  People often say "this device
+has a gamma of 2.2" as a shorthand for "this device has a power-law
+response with an exponent of 2.2".  People also talk about the gamma of
+a mathematical transform, or of a lookup table in a frame buffer, if its
+input and output are related by the power-law expression above.
+
+<p>But using the term "gamma" to refer to the exponents of transfer
+functions of many different stages in imaging pipelines has led to
+confusion.  Therefore, this specification uses "gamma" to refer
+specifically to the function from display output to image samples, and
+simply uses "exponent" when referring to other functions.
+
+<h3><a name="GT.expo-combine">13.2. Combining exponents</a></h3>
+
+<p>Real imaging systems will have several components, and more than
+one of these can be nonlinear.  If all of the components have transfer
+characteristics that are power functions, then the transfer function of
+the entire system is also a power function.  The exponent of the whole
+system's transfer function is just the product of all of the individual
+exponents of the separate stages in the system.
+
+<p>Also, stages that are linear pose no problem, since a power function
+with an exponent of 1.0 is really a linear function.  So a linear
+transfer function is just a special case of a power function, with an
+exponent of 1.0.
+
+<p>Thus, as long as our imaging system contains only stages with linear
+and power-law transfer functions, we can meaningfully talk about the
+exponent of the entire system.  This is indeed the case with most real
+imaging systems.
+
+<h3><a name="GT.end-to-end">13.3. End-to-end exponent</a></h3>
+
+<p>If the end-to-end exponent of an imaging system is 1.0, its output
+is proportional to its input.  This means that the ratio between the
+intensities of any two areas in the reproduced image will be the same as
+it was in the original scene.  It might seem that this should always be
+the goal of an imaging system: to accurately reproduce the tones of the
+original scene.  Alas, that is not the case.
+
+
+<p>One complication is that the response of the human visual system to
+low light levels is not a scaled-down version of its response to high
+light levels.  Therefore, if the display device emits less intense light
+than entered the capture device (as is usually the case for television
+cameras and television sets, for example), an end-to-end linear response
+will not produce an image that appears correct.  There are also other
+perceptual factors, like the affect of the ambient light level and
+the field of view surrounding the display, and physical factors, like
+reflectance of ambient light off the display.
+
+<p>Good end-to-end exponents are determined from experience.  For
+example, for photographic prints it's about 1.0; for slides intended to
+be projected in a dark room it's about 1.5; for television it's about
+1.14.
+
+<h3><a name="GT.crt">13.4. CRT exponent</a></h3>
+
+<p>All CRT displays have a power-law transfer characteristic with an
+exponent of about 2.2.  This is mainly due to the physical processes
+involved in controlling the electron beam in the electron gun.
+
+<p>An exception to this rule is fancy "calibrated" CRTs that have
+internal electronics to alter their transfer function.  If you have one
+of these, you probably should believe what the manufacturer tells you
+its exponent is.  But in all other cases, assuming 2.2 is likely to be
+pretty accurate.
+
+<p>There are various images around that purport to measure a display
+system's exponent, usually by comparing the intensity of an area
+containing alternating white and black with a series of areas of
+continuous gray of different intensity.  These are usually not reliable.
+Test images that use a "checkerboard" pattern of black and white are
+the worst, because a single white pixel will be reproduced considerably
+darker than a large area of white.  An image that uses alternating
+black and white horizontal lines (such as the <samp class=filename>gamma.png</samp>
+test image at
+<span class=url><a href="../../../../../ftp.uu.net/graphics/png/images/suite/gamma.png" >ftp://ftp.uu.net/graphics/png/images/suite/gamma.png</a></span>) 
+is
+much better, but even it may be inaccurate at high "picture"
+settings on some CRTs.
+
+<p>If you have a good photometer, you can measure the actual light
+output of a CRT as a function of input voltage and fit a power function
+to the measurements.  However, note that this procedure is very
+sensitive to the CRT's black level adjustment, somewhat sensitive to its
+picture adjustment, and also affected by ambient light.  Furthermore,
+CRTs spread some light from bright areas of an image into nearby darker
+areas; a single bright spot against a black background may be seen to
+have a "halo".  Your measuring technique will need to minimize the
+effects of this.
+
+<p>Because of the difficulty of measuring the exponent, using either
+test images or measuring equipment, you're usually better off just
+assuming 2.2 rather than trying to measure it.
+
+<h3><a name="GT.gamma-corr">13.5. Gamma correction</a></h3>
+
+<p>A CRT has an exponent of <span class=expr>2.2</span>, and we can't change that.  To get an
+end-to-end exponent closer to 1, we need to have at least one other
+component of the "image pipeline" that is nonlinear.  If, in fact,
+there is only one nonlinear stage in addition to the CRT, then it's
+traditional to say that the other nonlinear stage provides "gamma
+correction" to compensate for the CRT.  However, exactly where the
+"correction" is done depends on circumstance.
+
+<p>In all broadcast video systems, gamma correction is done in the
+camera.  This choice was made because it was more cost effective to
+place the expensive processing in the small number of capture devices
+(studio television cameras) than in the large number of broadcast
+receivers.  The original NTSC video standard required cameras to have a
+transfer function with an exponent of <span class=expr>1/2.2</span>, or about <span class=expr>0.45</span>.
+Recently,
+a more complex two-part transfer function has been adopted <span class=ref>[<a href="PNG-References.html#B.SMPTE-170M">SMPTE-170M</a>]</span>, 
+but its behavior can be
+well approximated by a power function with an exponent of <span class=expr>0.52</span>.  When
+the resulting image is displayed on a CRT with an exponent of <span class=expr>2.2</span>,
+the end-to-end exponent is about <span class=expr>1.14</span>, which has been found to be
+appropriate for typical television studio conditions and television
+viewing conditions.
+
+<p>These days, video signals are often digitized and stored in computer
+frame buffers.  The digital image is intended to be sent through a CRT,
+which has exponent <span class=expr>2.2</span>, so the image has a gamma of <span class=expr>1/2.2</span>.
+
+<p>Computer rendering programs often produce samples proportional to
+scene intensity.  Suppose the desired end-to-end exponent is near 1,
+and the program would like to write its samples directly into the frame
+buffer.  For correct display, the CRT output intensity must be nearly
+proportional to the sample values in the frame buffer.  This can be
+done with a special hardware lookup table between the frame buffer and
+the CRT hardware.  The lookup table (often called LUT) is loaded with a
+mapping that implements a power function with an exponent near <span class=expr>1/2.2</span>,
+providing "gamma correction" for the CRT gamma.
+
+<p>Thus, gamma correction sometimes happens before the frame buffer,
+sometimes after.  As long as images created on a particular platform are
+always displayed on that platform, everything is fine.  But when people
+try to exchange images, differences in gamma correction conventions
+often result in images that seem far too bright and washed out, or far
+too dark and contrasty.
+
+<h3><a name="GT.gamma-good">13.6. Benefits of gamma encoding</a></h3>
+
+<p>So, is it better to do gamma correction before or after the frame
+buffer?
+
+<p>In an ideal world, sample values would be stored as floating-point
+numbers, there would be lots of precision, and it wouldn't really matter
+much.  But in reality, we're always trying to store images in as few
+bits as we can.
+
+<p>If we decide to use samples proportional to intensity, and do the
+gamma correction in the frame buffer LUT, it turns out that we need to
+use at least 12 bits for each of red, green, and blue to have enough
+precision in intensity.  With any less than that, we will sometimes see
+"contour bands" or "Mach bands" in the darker areas of the image, where
+two adjacent sample values are still far enough apart in intensity for
+the difference to be visible.
+
+<p>However, through an interesting coincidence, the human eye's
+subjective perception of brightness is related to the physical
+stimulation of light intensity in a manner that is very much like the
+power function used for gamma correction.  If we apply gamma correction
+to measured (or calculated) light intensity before quantizing to an
+integer for storage in a frame buffer, we can get away with using many
+fewer bits to store the image.  In fact, 8 bits per color is almost
+always sufficient to avoid contouring artifacts.  This is because, since
+gamma correction is so closely related to human perception, we are
+assigning our 256 available sample codes to intensity values in a manner
+that approximates how visible those intensity changes are to the eye.
+Compared to a linearly encoded image, we allocate fewer sample values to
+brighter parts of the tonal range and more sample values to the darker
+portions of the tonal range.
+
+<p>Thus, for the same apparent image quality, images using gamma-encoded
+sample values need only about two-thirds as many bits of storage as
+images using linearly encoded samples.
+
+
+<h3><a name="GT.general">13.7. General gamma handling</a></h3>
+
+<p>When more than two nonlinear transfer functions are involved in the
+image pipeline, the term "gamma correction" becomes too vague.  If we
+consider a pipeline that involves capturing (or calculating) an image,
+storing it in an image file, reading the file, and displaying the image
+on some sort of display screen, there are at least 5 places in the
+pipeline that could have nonlinear transfer functions.  Let's give a
+specific name to each exponent:
+
+<dl>
+
+<dt><strong>camera exponent</strong>
+
+<dd>the exponent of the image sensor
+
+<p>
+
+<dt><strong>encoding exponent</strong>
+
+<dd>the exponent of any transformation performed by the software writing
+the image file
+
+<p>
+
+<dt><strong>decoding exponent</strong>
+
+<dd>the exponent of any transformation performed by the software reading
+the image file
+
+<p>
+
+<dt><strong>LUT exponent</strong>
+
+<dd>the exponent of the frame buffer LUT, if present
+
+<p>
+
+<dt><strong>CRT exponent</strong>
+
+<dd>the exponent of the CRT, generally 2.2
+
+<p>
+
+</dl>
+
+<p>In addition, let's add a few other names:
+
+<dl>
+
+<dt><strong>display exponent</strong>
+
+<dd>the exponent of the "display system" downstream of the frame buffer
+
+<pre>
+   display_exponent = LUT_exponent * CRT_exponent
+</pre>
+
+<p>
+
+<dt><strong>gamma</strong>
+
+<dd>the exponent of the function mapping display output intensity to
+file samples
+
+<pre>
+   gamma = 1.0 / (decoding_exponent * display_exponent)
+</pre>
+
+<p>
+
+<dt><strong>end-to-end exponent</strong>
+
+<dd>the exponent of the function mapping image sensor input intensity to
+display output intensity, generally 1.0 to 1.5
+
+<p>
+
+</dl>
+
+
+<p>When displaying an image file, the image decoding program is
+responsible for making gamma equal to the value specified in the
+<span class=cn>gAMA</span> chunk, by selecting the decoding exponent appropriately:
+
+<pre>
+   decoding_exponent = 1.0 / (gamma * display_exponent)
+</pre>
+
+<p>The display exponent might be known for this machine, or it might be
+obtained from the system software, or the user might have to be asked
+what it is.
+
+<h3><a name="GT.examples">13.8. Some specific examples</a></h3>
+
+<p>In digital video systems, the camera exponent is about 0.52 by
+declaration of the various video standards documents.  The CRT exponent
+is 2.2 as usual, while the encoding exponent, decoding exponent, and
+LUT exponent are all 1.0.  As a result, the end-to-end exponent is
+about 1.14.
+
+<p>On frame buffers that have hardware gamma correction tables, and
+that are calibrated to display samples that are proportional to display
+output intensity, the display exponent is 1.0.
+
+<p>Many workstations and X terminals and PC clones lack gamma correction
+lookup tables.  Here, the LUT exponent is always 1.0, so the display exponent is
+2.2.
+
+
+<p>On the Macintosh, there is a LUT.  By default, it is loaded with a
+table whose exponent is <span class=expr>1/1.45</span>, giving a display exponent (LUT and CRT
+combined) of about <span class=expr>1.52</span>.  Some Macs have a "Gamma" control panel with
+selections labeled 1.0, 1.2, 1.4, 1.8, or 2.2.  These settings load
+alternate LUTs, but beware: the selection labeled with the value <code class=expr>g</code>
+loads
+a LUT with exponent <code class=expr>g/2.61</code>, yielding
+
+<pre>
+   display_exponent = (g/2.61) * 2.2
+</pre>
+
+<p>On recent SGI systems, there is a hardware gamma-correction
+table whose contents are controlled by the (privileged) <samp>gamma</samp>
+program.  The exponent of the table is actually the reciprocal of
+the number <code class=expr>g</code> that <samp>gamma</samp> prints.  You can
+obtain <code class=expr>g</code> from the file
+<samp class=filename>/etc/config/system.glGammaVal</samp> and calculate
+
+<pre>
+   display_exponent = 2.2 / g
+</pre>
+
+<p>You will find SGI systems with <code class=expr>g</code> set to 1.0 and 2.2
+(or higher), but the default when machines are shipped is 1.7.
+
+<p>On NeXT systems the LUT has exponent <span class=expr>1/2.2</span> by default, but it can be
+modified by third-party applications.
+
+<p>In summary, for images designed to need no correction on these
+platforms:
+
+<pre>
+   Platform    LUT exponent   Default LUT exponent   Default gAMA
+   
+   PC clone       1.0                     1.0           45455
+   Macintosh     g/2.61        1.8/2.61 = 1/1.45        65909
+   SGI            1/g                     1/1.7         77273
+   NeXT           1/g                     1/2.2        100000
+</pre>
+
+<p>The default <span class=cn>gAMA</span> values assume a CRT display.
+
+<h3><a name="GT.video-trans">13.9. Video camera transfer functions</a></h3>
+
+<p>The original NTSC video standards specified a simple power-law
+camera transfer function with an exponent of <span class=expr>1/2.2</span>
+(about <span class=expr>0.45</span>).  This
+is not possible to implement exactly in analog hardware because the
+function has infinite slope at <code class=expr>x=0</code>, so all cameras deviated to some
+degree from this ideal.  More recently, a new camera transfer function
+that is physically realizable has been accepted as a standard <span class=ref>[<a href="PNG-References.html#B.SMPTE-170M">SMPTE-170M</a>]</span>.  
+It is
+
+<pre>
+   if (Vin &lt; 0.018)  Vout = 4.5 * Vin
+   if (Vin &gt;= 0.018) Vout = 1.099 * (Vin<code class=expr>^0.45</code>) - 0.099
+</pre>
+
+<p>where <code class=expr>Vin</code> and <code class=expr>Vout</code> are measured on
+a scale of 0 to 1.  Although
+the exponent remains 0.45, the multiplication and subtraction change
+the shape of the transfer function, so it is no longer a pure power
+function.  It can be well approximated, however, by a power function
+with exponent 0.52.
+
+<p>The PAL and SECAM video standards specify a power-law camera transfer
+function with an exponent of <span class=expr>1/2.8</span> (about <span class=expr>0.36</span>).  However,
+this is too
+low in practice, so real cameras are likely to have exponents close to
+NTSC practice.
+
+<h3><a name="GT.reading">13.10. Further reading</a></h3>
+
+<p>Charles Poynton's "Gamma FAQ" <span class=ref>[<a href="PNG-References.html#B.GAMMA-FAQ" >GAMMA-FAQ</a>]</span> 
+is a excellent source of information about gamma,
+although it claims that CRTs have an exponent of 2.5.  See also his book
+<span class=ref>[<a href="PNG-References.html#B.DIGITAL-VIDEO">DIGITAL-VIDEO</a>]</span>.
+
+<hr>
+<a href="PNG-Rationale.html">Previous page</a>
+<br>
+<a href="PNG-ColorAppendix.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+</BODY>
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-GammaAppendix.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+</HTML>

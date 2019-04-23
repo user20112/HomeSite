@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>About Me</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/pe-icons.css" rel="stylesheet">
+    <link href="css/prettyPhoto.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->       
+    <script src="js/jquery.js"></script>
+    <link rel="shortcut icon" href="images/ico/favicon.ico">
+
+    <script type="text/javascript">
+    jQuery(document).ready(function($){
+    'use strict';
+        jQuery('body').backstretch([
+            "images/Background.jpg",
+            "images/Background.jpg",
+            "images/Background.jpg"
+        ], {duration: 5000, fade: 500});
+
+        $("#mapwrapper").gMap({ controls: false,
+            scrollwheel: false,
+            markers: [{     
+                latitude:40.7566,
+                longitude: -73.9863,
+            icon: { image: "images/marker.png",
+                iconsize: [44,44],
+                iconanchor: [12,46],
+                infowindowanchor: [12, 0] } }],
+            icon: { 
+                image: "images/marker.png", 
+                iconsize: [26, 46],
+                iconanchor: [12, 46],
+                infowindowanchor: [12, 0] },
+            latitude:40.7566,
+            longitude: -73.9863,
+            zoom: 14 });
+    });
+    </script>
+</head><!--/head-->
+<body>
+<div id="preloader"></div>
+    <header class="navbar navbar-inverse navbar-fixed-top " role="banner">
+        		<div id="nav-placeholder" class="collapse navbar-collapse">
+			<script>
+			$(function(){
+			$("#nav-placeholder").load("nav.html");
+			});
+			</script>
+			</div>
+    </header><!--/header-->
+
+    <section id="single-page-slider" class="no-margin">
+        <div class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="item active">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="center gap fade-down section-heading">
+                                    <h2 class="main-title">About me</h2>
+                                    <hr>
+                                    <p>Quick overview of the CPET student youve decided to read up on.</p>
+                                </div>
+                            </div>   
+                        </div>
+                    </div>
+                </div><!--/.item-->
+            </div><!--/.carousel-inner-->
+        </div><!--/.carousel-->
+    </section><!--/#main-slider-->
+
+    <div id="content-wrapper">
+        <section id="about-us" class="white">
+            <div class="container">
+                <div class="gap"></div>
+				
+                <div class="row">
+                    <div class="col-md-12 fade-up">
+                       <h1>Hello,</h1>
+            <p>Thanks for taking the time to check out my site, my names Devlin im a computer programming and engineering major over at the tech in concord. I'm currently employed at Baked in concord at 246 Sheep Davis road as a shift leader. If you find anything that i could improve about either this site the aspnet site linked on the other tab please send me a message id love to hear it. </p>
+			<p>Any way have a nice rest of your day</p>
+			<h2>Hobbies</h2>
+			<p> Server Managing: I currently have 2 servers an R610 mostly stock i bought of craigslist with 1.2 terabytes of raid 1 harddrives. And an R710 server running 2 Xeon 5687 cpus filled with 48 gigs of ram and 1.5 terbytes of hardrive storage also in raid 1.</p>
+			<p>Site Management: Theres this site and the aspnet site you can view to the left in one of the navagation panels. Doing sites like these honestly just helps me understand the material better and it gives me a nice way to spend time when i have it off.</p>
+            <p>PC Building: Long before i was building servers i built PCs. over time i built more interesting setups including a one inside a backpack protected by the top of a trashcan. and one that had a laptop motherboard behind the motherboard back of the main pc that it used as a wireless adapter. this came about due to me being to cheap to buy an adapter yet a family member was tossing an old rundown inspiron laptop.</p>
+            <p>C++, C#, Java, Ruby, Python, etc coding. These usually take the form of small applications I use to supliment those i cant find online. My first example of this was a finance management application done as a WPF application to help me manage my money. this was later ported to my aspnet site (private view for obviose reasons)</p>
+            <p>If you have any project suggestions id lvoe to hear it</p>
+			<h2>Education</h2>
+			<p>CPET senoir at NHTI. as of 2018</p>
+            <p>GED from the state of NH</p>
+                    </div>
+                </div>
+				<div class="row">
+                    <div class="col-md-12 fade-up">
+                       
+                    </div>
+                    
+                </div>
+            </div>      
+        </section>
+    </div>
+
+    <div id="footer-wrapper">
+        <section id="bottom" class="">
+            <div class="container">
+                <div class="row">
+                    <div >
+                        <h4>Not finding what you want?</h4>
+                        <p>Go to the Contact Info Page and send me a text or email with the suggestion you want i get very few and would implement it rather rapidly.</p>
+                    </div><!--/.col-md-3-->
+
+                </div>
+            </div>
+        </section><!--/#bottom-->
+
+        <footer id="footer" class="">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                       Go to top of the page
+                    </div>
+                    <div class="col-sm-6">
+                        <ul class="pull-right">
+                            <li><a id="gototop" class="gototop" href="#"><i class="fa fa-chevron-up"></i></a></li><!--#gototop-->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer><!--/#footer-->
+    </div>
+
+
+    <script src="js/plugins.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.prettyPhoto.js"></script>   
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWDPCiH080dNCTYC-uprmLOn2mt2BMSUk&amp;sensor=true"></script> 
+    <script src="js/init.js"></script>
+</body>
+</html>

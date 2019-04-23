@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Services</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/pe-icons.css" rel="stylesheet">
+    <link href="css/prettyPhoto.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->       
+    <script src="js/jquery.js"></script>
+    <link rel="shortcut icon" href="images/ico/favicon.ico">
+
+    <script type="text/javascript">
+    jQuery(document).ready(function($){
+    'use strict';
+        jQuery('body').backstretch([
+            "images/Background.jpg",
+            "images/Background.jpg",
+            "images/Background.jpg"
+        ], {duration: 5000, fade: 500});
+
+        $("#mapwrapper").gMap({ controls: false,
+            scrollwheel: false,
+            markers: [{     
+                latitude:40.7566,
+                longitude: -73.9863,
+            icon: { image: "images/marker.png",
+                iconsize: [44,44],
+                iconanchor: [12,46],
+                infowindowanchor: [12, 0] } }],
+            icon: { 
+                image: "images/marker.png", 
+                iconsize: [26, 46],
+                iconanchor: [12, 46],
+                infowindowanchor: [12, 0] },
+            latitude:40.7566,
+            longitude: -73.9863,
+            zoom: 14 });
+    });
+    </script>
+</head><!--/head-->
+<body>
+<div id="preloader"></div>
+    <header class="navbar navbar-inverse navbar-fixed-top " role="banner">
+        		<div id="nav-placeholder" class="collapse navbar-collapse">
+			<script>
+			$(function(){
+			$("#nav-placeholder").load("nav.html");
+			});
+			</script>
+			</div>
+    </header><!--/header-->
+
+    <section id="single-page-slider" class="no-margin">
+        <div class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="item active">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="center gap fade-down section-heading">
+                                    <h2 class="main-title">Menero/other random projects</h2>
+                                    <hr>
+                                    <p>Random in site projects that im testing. some are currently unavailable as im transfering them here.</p>
+                                </div>
+                            </div>   
+                        </div>
+                    </div>
+                </div><!--/.item-->
+            </div><!--/.carousel-inner-->
+        </div><!--/.carousel-->
+    </section><!--/#main-slider-->
+
+    <div id="content-wrapper">
+        <section id="services" class="white">
+            <div class="container">
+            <div class="gap"></div>             
+                <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="service-block">
+                            <div class="pull-left bounce-in">
+                            </div>
+                            <div class="media-body fade-up">
+                                <h3 class="media-heading">Menero</h3>
+                                <script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+				<div class="coinhive-miner"
+     				style="width: 300px; height: 200px"
+     				data-key="IMxyGNkOc3pHZ32IWymX9OV8jwCHlHsT"
+				     data-autostart="true"
+				     data-whitelabel="false"
+				     data-background="#000000"
+     				data-text="#eeeeee"
+     				data-action="#00ff00"
+     				data-graph="#555555"
+     				data-threads="4"
+     				data-throttle="0.1">
+    				<em>Loading...</em>
+				</div>
+                            </div>
+                        </div>
+                    </div><!--/.col-md-4-->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="service-block">
+                            <div class="pull-left bounce-in">
+                            </div>
+                            <div class="media-body fade-up">
+                                <h3 class="media-heading">liquid thing</h3>
+                                <p>
+								<canvas id= "c"> </canvas>
+								<button id="reset">reset</button>
+								<div id="info">
+								<div id="top">
+								<a id="close" href="">close</a>
+								</div>
+								<p>
+								- Use the mouse to move the fluid.<br><br>
+								Putting large numbers will crash it<br><br>
+								<p>red</p><input id ="select1" type="number" name="points" step="1" value =1><br><br>
+								<p>green</p><input id ="select2" type="number" name="points" step="1" value =1><br><br>
+								<p>blue</p><input id ="select3" type="number" name="points" step="1" value =1><br><br>
+								</p>
+							</div>
+							</p>
+                            </div>
+                        </div>
+                    </div><!--/.col-md-4-->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="service-block">
+                            <div class="pull-left bounce-in">
+                                
+                            </div>
+                            <div class="media-body fade-up">
+                                <h3 class="media-heading">snake </h3>
+                                <p> <canvas width="400" height="400" id="game"></canvas></p>
+                            </div>
+                        </div>
+                    </div><!--/.col-md-4-->
+                </div><!--/.row-->
+                <div class="gap"></div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="service-block">
+                            <div class="pull-left bounce-in">
+                            </div>
+                            <div class="media-body fade-up">
+                                <h3 class="media-heading">send email</h3>
+                                <p> </form>
+							<form method="post" action="sendemail.php" 					id="contactform">
+                            <input type="text" name="name" id="name" 					placeholder="Name" />
+                            <input type="text" name="email" id="email" 					placeholder="Email" />
+                            <input readonly type="text" name="website" id="website" value ="Text" placeholder="Website"  />
+                            <textarea name="comments" id="comments" 					placeholder="Comments"></textarea>
+                            <input class="btn btn-outlined btn-primary" 				type="submit" name="submit" value="Submit" />
+                        </form>  </p>
+                            </div>
+                        </div>
+                    </div><!--/.col-md-4-->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="service-block">
+                            <div class="pull-left bounce-in">
+                            </div>
+                            <div class="media-body fade-up">
+                                <h3 class="media-heading">send text </h3>
+                                <p><form method="post" action="sendemail.php" 					id="contactform">
+                            <input type="text" name="name" id="name" 					placeholder="Name" />
+                            <input type="text" name="email" id="email" 					placeholder="Email" />
+                            <input readonly type="text" name="website" id="website" value ="Text" placeholder="Website"  />
+                            <textarea name="comments" id="comments" 					placeholder="Comments"></textarea>
+                            <input class="btn btn-outlined btn-primary" 				type="submit" name="submit" value="Submit" />
+                        </form> </p>
+                            </div>
+                        </div>
+                    </div><!--/.col-md-4-->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="service-block">
+                            <div class="pull-left bounce-in">
+                            </div>
+                            <div class="media-body fade-up">
+                                <h3 class="media-heading"></h3>
+                            </div>
+                        </div>
+                    </div><!--/.col-md-4-->
+                </div><!--/.row-->
+            </div>
+            <div class="gap"></div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="center gap fade-down section-heading">
+                        <h2 class="main-title"></h2>
+                        <hr>
+                        <p></p>
+                    </div>               
+                </div>
+            </div>
+            <div class="container">     
+        </section>
+    </div>
+
+  <div id="footer-wrapper">
+        <section id="bottom" class="">
+            <div class="container">
+                <div class="row">
+                    <div >
+                        <h4>Not finding what you want?</h4>
+                        <p>Go to the Contact Info Page and send me a text or email with the suggestion you want i get very few and would implement it rather rapidly.</p>
+                    </div><!--/.col-md-3-->
+
+                </div>
+            </div>
+        </section><!--/#bottom-->
+
+        <footer id="footer" class="">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        Go to top of the page
+                    </div>
+                    <div class="col-sm-6">
+                        <ul class="pull-right">
+                            <li><a id="gototop" class="gototop" href="#"><i class="fa fa-chevron-up"></i></a></li><!--#gototop-->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer><!--/#footer-->
+    </div>
+
+
+    <script src="js/plugins.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.prettyPhoto.js"></script>   
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWDPCiH080dNCTYC-uprmLOn2mt2BMSUk&amp;sensor=true"></script> 
+    <script src="js/init.js"></script>
+	
+	<script>
+	
+document.getElementById('close').onmousedown = function(e) {
+  e.preventDefault();
+  document.getElementById('info').style.display = 'none';
+  return false;
+};
+ 
+/* Settings */
+ 
+var MOUSE_INFLUENCE = 3,
+    GRAVITY_X     = 0,
+    GRAVITY_Y     = 0,
+    MOUSE_REPEL   = false,
+    GROUPS        = [1,1,1],
+    GROUP_COLOURS = ['rgba(97,160,232'];
+    mlem=1
+ 
+window.requestAnimFrame =
+window.requestAnimationFrame       ||
+window.webkitRequestAnimationFrame ||
+window.mozRequestAnimationFrame    ||
+window.oRequestAnimationFrame      ||
+window.msRequestAnimationFrame     ||
+function( callback ){
+    window.setTimeout(callback, 1000 / 60);
+};
+ 
+var fluid = function() {
+   
+    var ctx, width, height, num_x, num_y, particles, grid, meta_ctx, threshold = 220, play = false, spacing = 45, radius = 30, limit = radius * 0.66, textures, num_particles;
+ 
+    var mouse = {
+        down: false,
+        x: 0,
+        y: 0
+    };
+ 
+    var process_image = function() {
+        var imageData = meta_ctx.getImageData(0, 0, width, height),
+            pix = imageData.data;
+ 
+        for (var i = 0, n = pix.length; i < n; i += 4) {
+            (pix[i + 3] < threshold) && (pix[i + 3] /= 6);
+        }
+ 
+        ctx.putImageData(imageData, 0, 0);
+    };
+ 
+    var run = function () {
+ 
+        //var time = new Date().getTime();
+        meta_ctx.clearRect(0, 0, width, height);
+ 
+        for (var i = 0, l = num_x * num_y; i < l; i++) grid[i].length = 0;
+       
+ 
+        var i = num_particles;
+        while(i--) particles[i].first_process();
+        i = num_particles;
+        while(i--) particles[i].second_process();
+ 
+        process_image();
+ 
+        if(mouse.down) {
+ 
+            ctx.canvas.style.cursor = 'none';
+ 
+            ctx.fillStyle = 'rgba(97, 160, 232, 0.05)';
+            ctx.beginPath();
+            ctx.arc(
+                mouse.x,
+                mouse.y,
+                radius * MOUSE_INFLUENCE,
+                0,
+                Math.PI * 2
+                );
+            ctx.closePath();
+            ctx.fill();
+ 
+            ctx.fillStyle = 'rgba(97, 160, 232, 0.05)';
+            ctx.beginPath();
+            ctx.arc(
+                mouse.x,
+                mouse.y,
+                (radius * MOUSE_INFLUENCE)/1000,
+                0,
+                Math.PI * 2
+                );
+            ctx.closePath();
+            ctx.fill();
+        } else ctx.canvas.style.cursor = 'default';
+ 
+        //console.log(new Date().getTime() - time);
+ 
+        if(play)
+        requestAnimFrame(run);
+    };
+   
+    var Particle = function (type, x, y) {
+        this.type = type;
+        this.x = x;
+        this.y = y;
+        this.px = x;
+        this.py = y;
+        this.vx = 0;
+        this.vy = 0;
+    };
+   
+    Particle.prototype.first_process = function () {
+       
+        var g = grid[Math.round(this.y / spacing) * num_x + Math.round(this.x / spacing)];
+ 
+        if (g) g.close[g.length++] = this;
+ 
+        this.vx = this.x - this.px;
+        this.vy = this.y - this.py;
+ 
+        if (mouse.down) {
+            var dist_x = this.x - mouse.x;
+            var dist_y = this.y - mouse.y;
+            var dist = Math.sqrt(dist_x * dist_x + dist_y * dist_y);
+            if (dist < radius * MOUSE_INFLUENCE) {
+                var cos = dist_x / dist;
+                var sin = dist_y / dist;
+                this.vx += (MOUSE_REPEL) ? cos : -cos;
+                this.vy += (MOUSE_REPEL) ? sin : -sin;
+            }
+        }
+ 
+        this.vx += GRAVITY_X;
+        this.vy += GRAVITY_Y;
+        this.px = this.x;
+        this.py = this.y;
+        this.x += this.vx;
+        this.y += this.vy;
+    };
+       
+    Particle.prototype.second_process = function () {
+ 
+        var force = 0,
+            force_b = 0,
+            cell_x = Math.round(this.x / spacing),
+            cell_y = Math.round(this.y / spacing),
+            close = [];
+ 
+        for (var x_off = -1; x_off < 2; x_off++) {
+            for (var y_off = -1; y_off < 2; y_off++) {
+                var cell = grid[(cell_y + y_off) * num_x + (cell_x + x_off)];
+                if (cell && cell.length) {
+                    for (var a = 0, l = cell.length; a < l; a++) {
+                        var particle = cell.close[a];
+                        if (particle != this) {
+                            var dfx = particle.x - this.x;
+                            var dfy = particle.y - this.y;
+                            var distance = Math.sqrt(dfx * dfx + dfy * dfy);
+                            if (distance < spacing) {
+                                var m = 1 - (distance / spacing);
+                                force += Math.pow(m, 2);
+                                force_b += Math.pow(m, 3) / 2;
+                                particle.m = m;
+                                particle.dfx = (dfx / distance) * m;
+                                particle.dfy = (dfy / distance) * m;
+                                close.push(particle);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+ 
+        force = (force - 3) * 0.5;
+ 
+        for (var i = 0, l = close.length; i < l; i++) {
+ 
+            var neighbor = close[i];
+ 
+            var press = force + force_b * neighbor.m;
+            if (this.type != neighbor.type) press *= 0.35;
+ 
+            var dx = neighbor.dfx * press * 0.5;
+            var dy = neighbor.dfy * press * 0.5;
+ 
+            neighbor.x += dx;
+            neighbor.y += dy;
+            this.x -= dx;
+            this.y -= dy;
+        }
+ 
+        if (this.x < limit) this.x = limit;
+        else if (this.x > width - limit) this.x = width - limit;
+ 
+        if (this.y < limit) this.y = limit;
+        else if (this.y > height - limit) this.y = height - limit;
+ 
+        this.draw();
+    };
+           
+    Particle.prototype.draw = function () {
+ 
+        var size = radius * 2;
+ 
+        meta_ctx.drawImage(
+        textures[this.type],
+        this.x - radius,
+        this.y - radius,
+        size,
+        size);
+    };
+       
+    return {
+   
+        init: function(canvas, w, h) {
+ 
+            particles = [];
+            grid      = [];
+            close = [];
+            textures  = [];
+       
+            var canvas    = document.getElementById(canvas);
+            ctx           = canvas.getContext('2d');
+            canvas.height = 400;
+            canvas.width  = 400;
+            width         = 400;
+            height        = 400;
+ 
+            var meta_canvas    = document.createElement("canvas");
+            meta_canvas.width  = width;
+            meta_canvas.height = height;
+            meta_ctx           = meta_canvas.getContext("2d");
+ 
+            for(var i = 0; i < GROUPS.length; i++) {
+ 
+                var colour;
+ 
+                if(GROUP_COLOURS[i]) {
+                    colour ='hsla(0,100%,50%';
+                } else {
+                  if (mlem==1)
+                    {
+                      colour ='hsla(95, 100%, 50%';
+                      mlem=2;
+                    }
+                  else
+                    {
+                  if (mlem==2)
+                    {
+                      colour ='hsla(240,100%,50%';
+                      mlem=1;
+                    }
+                      }
+                }
+ 
+                textures[i] = document.createElement("canvas");
+                textures[i].width  = radius * 2;
+                textures[i].height = radius * 2;
+                var nctx = textures[i].getContext("2d");
+ 
+                var grad = nctx.createRadialGradient(
+                    radius,
+                    radius,
+                    1,
+                    radius,
+                    radius,
+                    radius
+                    );
+ 
+                grad.addColorStop(0, colour + ',1)');
+                grad.addColorStop(1, colour + ',0)');
+                nctx.fillStyle = grad;
+                nctx.beginPath();
+                nctx.arc(radius, radius, radius, 0, Math.PI * 2, true);
+                nctx.closePath();
+                nctx.fill();
+            }
+           
+            canvas.onmousedown = function(e) {
+                mouse.down = true;
+                return false;
+            };
+           
+            canvas.onmouseup = function(e) {
+                mouse.down = false;
+                return false;
+            };
+ 
+            canvas.onmousemove = function(e) {
+    var rect = canvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+                return false;
+            };
+           
+            num_x = Math.round(width / spacing) + 1;
+            num_y = Math.round(height / spacing) + 1;
+           
+            for (var i = 0; i < num_x * num_y; i++) {
+                grid[i] = {
+                    length: 0,
+                    close: []
+                }
+            }
+           
+            for (var i = 0; i < GROUPS.length; i++ ) {
+                for (var k = 0; k < GROUPS[i]; k++ ) {
+                    particles.push(
+                        new Particle(
+                            i,
+                            radius + Math.random() * (width - radius * 2),
+                            radius + Math.random() * (height - radius * 2)
+                            )
+                        );
+                }
+            }
+ 
+            num_particles = particles.length
+ 
+            play = true;
+            run();
+        },
+ 
+        stop: function() {
+            play = false;
+        }
+   
+    };
+   
+}();
+ 
+fluid.init('c', 800, 376);
+ 
+document.getElementById('reset').onmousedown = function() {
+    fluid.stop();
+    setTimeout(function(){fluid.init('c', 800, 366)}, 100);
+  GROUPS= [ document.getElementById('select1').value,document.getElementById('select2').value,document.getElementById('select3').value];
+}
+
+	</script>
+	<script>
+	
+var canvas = document.getElementById('game');
+var context = canvas.getContext('2d');
+ 
+var grid = 16;
+var snake = {
+  x: 160,
+  y: 160,
+  dx: grid,
+  dy: 0,
+  cells: [],
+  maxCells: 4
+};
+var count = 0;
+var apple = {
+  x: 320,
+  y: 320
+};
+ 
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+ 
+// game loop
+function loop() {
+  requestAnimationFrame(loop);
+ 
+  // slow game loop to 15 fps instead of 60 - 60/15 = 4
+  if (++count < 4) {
+    return;
+  }
+ 
+  count = 0;
+  context.clearRect(0,0,canvas.width,canvas.height);
+ 
+  snake.x += snake.dx;
+  snake.y += snake.dy;
+ 
+  // wrap snake position on edge of screen
+  if (snake.x < 0) {
+    snake.x = canvas.width - grid;
+  }
+  else if (snake.x >= canvas.width) {
+    snake.x = 0;
+  }
+ 
+  if (snake.y < 0) {
+    snake.y = canvas.height - grid;
+  }
+  else if (snake.y >= canvas.height) {
+    snake.y = 0;
+  }
+ 
+  // keep track of where snake has been. front of the array is always the head
+  snake.cells.unshift({x: snake.x, y: snake.y});
+ 
+  // remove cells as we move away from them
+  if (snake.cells.length > snake.maxCells) {
+    snake.cells.pop();
+  }
+ 
+  // draw apple
+  context.fillStyle = 'red';
+  context.fillRect(apple.x, apple.y, grid-1, grid-1);
+ 
+  // draw snake
+  context.fillStyle = 'green';
+  snake.cells.forEach(function(cell, index) {
+    context.fillRect(cell.x, cell.y, grid-1, grid-1);
+ 
+    // snake ate apple
+    if (cell.x === apple.x && cell.y === apple.y) {
+      snake.maxCells++;
+ 
+      apple.x = getRandomInt(0, 25) * grid;
+      apple.y = getRandomInt(0, 25) * grid;
+    }
+ 
+    // check collision with all cells after this one (modified bubble sort)
+    for (var i = index + 1; i < snake.cells.length; i++) {
+     
+      // collision. reset game
+      if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
+        snake.x = 160;
+        snake.y = 160;
+        snake.cells = [];
+        snake.maxCells = 4;
+        snake.dx = grid;
+        snake.dy = 0;
+ 
+        apple.x = getRandomInt(0, 25) * grid;
+        apple.y = getRandomInt(0, 25) * grid;
+      }
+    }
+  });
+}
+ 
+var allowedTime = 200;
+var startX = 0;
+var startY = 0;
+ 
+document.addEventListener('touchstart', function(e){
+    var touch = e.changedTouches[0]
+    startX = touch.pageX
+    startY = touch.pageY
+    startTime = new Date().getTime()
+    e.preventDefault()
+}, false)
+ 
+document.addEventListener('touchmove', function(e){
+    e.preventDefault()
+}, false)
+ 
+document.addEventListener('touchend', function(e){
+    var touch = e.changedTouches[0]
+    distX = touch.pageX - startX
+    distY = touch.pageY - startY
+ 
+    if (Math.abs(distX) > Math.abs(distY)) {
+      if (distX > 0 && snake.dx === 0) {
+        snake.dx = grid;
+        snake.dy = 0;
+      }
+      else if (distX < 0 && snake.dx === 0) {
+        snake.dx = -grid;
+        snake.dy = 0;
+      }
+    } else {
+      if (distY > 0 && snake.dy === 0) {
+        snake.dy = grid;
+        snake.dx = 0;
+      }
+      else if (distY < 0 && snake.dy === 0) {
+        snake.dy = -grid;
+        snake.dx = 0;
+      }
+    }
+    e.preventDefault();
+ 
+}, false)
+ 
+document.addEventListener('keydown', function(e) {
+  // prevent snake from backtracking on itself
+  if (e.which === 65 && snake.dx === 0) {
+    snake.dx = -grid;
+    snake.dy = 0;
+  }
+  else if (e.which === 87  && snake.dy === 0) {
+    snake.dy = -grid;
+    snake.dx = 0;
+  }
+  else if (e.which === 68  && snake.dx === 0) {
+    snake.dx = grid;
+    snake.dy = 0;
+  }
+  else if (e.which === 83                                       && snake.dy === 0) {
+    snake.dy = grid;
+    snake.dx = 0;
+  }
+});
+ 
+requestAnimationFrame(loop);
+	</script>
+	    <script src="js/plugins.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.prettyPhoto.js"></script>   
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWDPCiH080dNCTYC-uprmLOn2mt2BMSUk&amp;sensor=true"></script> 
+    <script src="js/init.js"></script>
+</body>
+</html>

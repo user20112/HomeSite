@@ -1,0 +1,322 @@
+<!doctype html public "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<html lang="en">
+
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-ColorAppendix.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+<head>
+
+<TITLE>PNG Specification: Color Tutorial</TITLE>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+
+
+
+
+
+
+
+
+<h1>PNG (Portable Network Graphics) Specification, Version 1.2</h1>
+
+
+
+<hr>
+<a href="PNG-GammaAppendix.html">Previous page</a>
+<br>
+<a href="PNG-CRCAppendix.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+<h2><a name="ColorAppendix">14. Appendix: Color Tutorial</a></h2>
+
+<p>(This appendix is not part of the formal PNG specification.)
+
+<h3><a name="CT.chrom">14.1. About chromaticity</a></h3>
+
+<p>The <span class=cn>cHRM</span> chunk is used, together with the <span class=cn>gAMA</span>
+chunk, to convey precise color information so that a PNG image can be
+displayed or printed with better color fidelity than is possible without
+this information.  The preceding chapters state how this information is
+encoded in a PNG image.  This tutorial briefly outlines the underlying
+color theory for those who might not be familiar with it.
+
+<p>Note that displaying an image with incorrect gamma will produce
+<em>much</em> larger color errors than failing to use the chromaticity
+data.  First be sure the monitor set-up and gamma correction are right,
+then worry about chromaticity.
+
+<h3><a name="CT.problem">14.2. The problem of color</a></h3>
+
+<p>The color of an object depends not only on the precise spectrum of
+light emitted or reflected from it, but also on the observer--their
+species, what else they can see at the same time, even what they have
+recently looked at!  Furthermore, two very different spectra can produce
+exactly the same color sensation.  Color is not an objective property of
+real-world objects; it is a subjective, biological sensation.  However,
+by making some simplifying assumptions (such as: we are talking about
+<em>human</em> vision) it is possible to produce a mathematical model of
+color and thereby obtain good color accuracy.
+
+<h3><a name="CT.ddep">14.3. Device-dependent color</a></h3>
+
+<p>Display the same RGB data on three different monitors, side by
+side, and you will get a noticeably different color balance on each
+display.  This is because each monitor emits a slightly different shade
+and intensity of red, green, and blue light.  RGB is an example of a
+<em>device-dependent color model</em>--the color you get depends on
+the device.  This also means that a particular color--represented as
+say RGB 87, 146, 116 on one monitor--might have to be specified as
+RGB 98, 123, 104 on another to produce the <em>same</em> color.
+
+<h3><a name="CT.idep">14.4. Device-independent color</a></h3>
+
+<p>A full physical description of a color would require specifying the
+exact spectral power distribution of the light source.  Fortunately,
+the human eye and brain are not so sensitive as to require exact
+reproduction of a spectrum.  Mathematical, device-independent color
+models exist that describe fairly well how a particular color will be
+seen by humans.  The most important device-independent color model, to
+which all others can be related, was developed by the International
+Commission on Illumination (CIE, in French) and is called "CIE XYZ" or
+simply "XYZ".
+
+<p>In XYZ, X is the sum of a weighted power distribution over the whole
+visible spectrum.  So are Y and Z, each with different weights.  Thus
+any arbitrary spectral power distribution is condensed down to just
+three floating-point numbers.  The weights were derived from color
+matching experiments done on human subjects in the 1920s.  CIE XYZ has
+been an International Standard since 1931, and it has a number of useful
+properties:
+
+<ul>
+
+<li>two colors with the same XYZ values will look the same to humans
+
+<p>
+
+<li>two colors with different XYZ values will not look the same
+
+<p>
+
+<li>the Y value represents all the brightness information (luminance)
+
+<p>
+
+<li>the XYZ color of any object can be objectively measured
+
+<p>
+
+</ul>
+
+
+<p>Color models based on XYZ have been used for many years by people who
+need accurate control of color--lighting engineers for film and TV,
+paint and dyestuffs manufacturers, and so on.  They are thus proven in
+industrial use.  Accurate, device-independent color started to spread
+from high-end, specialized areas into the mainstream during the late
+1980s and early 1990s, and PNG takes notice of that trend.
+
+<h3><a name="CT.cdep">14.5. Calibrated device-dependent color</a></h3>
+
+<p>Traditionally, image file formats have used uncalibrated,
+device-dependent color.  If the precise details of the original display
+device are known, it becomes possible to convert the device-dependent
+colors of a particular image to device-independent ones.  Making
+simplifying assumptions, such as working with CRTs (which are much
+easier than printers), all we need to know are the XYZ values of each
+primary color and the CRT exponent.
+
+<p>So why does PNG not store images in XYZ instead of RGB?  Well, two
+reasons.  First, storing images in XYZ would require more bits of
+precision, which would make the files bigger.  Second, all programs
+would have to convert the image data before viewing it.  Whether
+calibrated or not, all variants of RGB are close enough that undemanding
+viewers can get by with simply displaying the data without color
+correction.  By storing calibrated RGB, PNG retains compatibility with
+existing programs that expect RGB data, yet provides enough information
+for conversion to XYZ in applications that need precise colors.  Thus,
+we get the best of both worlds.
+
+<h3><a name="CT.chrom-lum">14.6. Chromaticity and luminance</a></h3>
+
+<p>Chromaticity is an objective measurement of the color of an object,
+leaving aside the brightness information.  Chromaticity uses two
+parameters <code class=expr>x</code> and <code class=expr>y</code>, which are readily calculated
+from XYZ:
+
+<pre>
+   x = X / (X + Y + Z)
+   y = Y / (X + Y + Z)
+</pre>
+
+<p>XYZ colors having the same chromaticity values will appear to
+have the same hue but can vary in absolute brightness.  Notice that
+<code class=expr>x,y</code> are dimensionless ratios, so they have the same values no
+matter what units we've used for <code class=expr>X,Y,Z</code>.
+
+
+<p>The <code class=expr>Y</code> value of an XYZ color is directly proportional to its
+absolute
+brightness and is called the luminance of the color.  We can describe a
+color either by XYZ coordinates or by chromaticity <code class=expr>x,y</code> plus
+luminance <code class=expr>Y</code>.  The XYZ form has the advantage that it is linearly
+related to RGB intensities.
+
+<h3><a name="CT.mon-col">14.7. Characterizing computer monitors</a></h3>
+
+<p>The "white point" of a monitor is the chromaticity <code class=expr>x,y</code>
+of the monitor's nominal white, that is, the color produced when
+<code class=expr>R=G=B=maximum</code>.
+
+<p>It's customary to specify monitor colors by giving the chromaticities
+of the individual phosphors R, G, and B, plus the white point.  The
+white point allows one to infer the relative brightnesses of the three
+phosphors, which isn't determined by their chromaticities alone.
+
+<p>Note that the absolute brightness of the monitor is not specified.
+For computer graphics work, we generally don't care very much about
+absolute brightness levels.  Instead of dealing with absolute XYZ
+values (in which <code class=expr>X,Y,Z</code> are expressed in physical units of radiated
+power, such as candelas per square meter), it is convenient to work in
+"relative XYZ" units, where the monitor's nominal white is taken to have
+a luminance (<code class=expr>Y</code>) of 1.0.  Given this assumption, it's simple to compute
+XYZ coordinates for the monitor's white, red, green, and blue from their
+chromaticity values.
+
+<p>Why does <span class=cn>cHRM</span> use <code class=expr>x,y</code> rather than XYZ?  Simply
+because that is how manufacturers print the information in their spec
+sheets!  Usually, the first thing a program will do is convert the
+<span class=cn>cHRM</span> chromaticities into relative XYZ space.
+
+<h3><a name="CT.what-do">14.8. Uses for XYZ</a></h3>
+
+<p>If a PNG file has the <span class=cn>gAMA</span> and <span class=cn>cHRM</span> chunks, the
+source RGB values can be converted to XYZ.  This lets you:
+
+<ul>
+
+<li>do accurate grayscale conversion (just use the <code class=expr>Y</code> component)
+
+<p>
+
+<li>convert to RGB for your own monitor (to see the original colors)
+
+<p>
+
+<li>print the image in Level 2 PostScript with better color fidelity
+than a simple RGB to CMYK conversion could provide
+
+<p>
+
+<li>calculate an optimal color palette
+
+<p>
+
+<li>pass the image data to a color management system
+
+<p>
+
+<li>etc.
+
+<p>
+
+</ul>
+
+<h3><a name="CT.RGB-XYZ">14.9. Converting between RGB and XYZ</a></h3>
+
+<p>Make a few simplifying assumptions first, like the monitor really
+is jet black with no input and the guns don't interfere with one
+another.  Then, given that you know the CIE XYZ values for each of red,
+green, and blue for a particular monitor, you put them into a matrix
+<code class=expr>M</code>:
+
+<pre>
+        Xr Xg Xb
+   M =  Yr Yg Yb
+        Zr Zg Zb
+</pre>
+
+<p>RGB intensity samples normalized to the range 0 to 1 can be converted
+to XYZ by matrix multiplication.  (If you have gamma-encoded RGB
+samples, first undo the gamma encoding.)
+
+<pre>
+   X     R
+   Y = M G
+   Z     B
+</pre>
+
+<p>In other words,
+<code class=expr>X&nbsp;=&nbsp;Xr*R&nbsp;+&nbsp;Xg*G&nbsp;+&nbsp;Xb*B</code>, and similarly
+for <code class=expr>Y</code> and <code class=expr>Z</code>.  You can go the other way too:
+
+<pre>
+   R        X
+   G = invM Y
+   B        Z
+</pre>
+
+<p>where <code class=expr>invM</code> is the inverse of the matrix <code class=expr>M</code>.
+
+<h3><a name="CT.gamut">14.10. Device gamut</a></h3>
+
+<p>The gamut of a device is the subset of visible colors that the
+device can display.  (It has nothing to do with <em>gamma</em>.)  The
+gamut of an RGB device can be visualized as a polyhedron in XYZ space;
+the vertices correspond to the device's black, blue, red, green,
+magenta, cyan, yellow, and white.
+
+<p>Different devices have different gamuts, in other words one device
+will be able to display certain colors (usually highly saturated ones)
+that another device cannot.  The gamut of a particular RGB device can be
+determined from its R, G, and B chromaticities and white point (the same
+values given in the <span class=cn>cHRM</span> chunk).  The gamut of a color printer
+is more complex and can be determined only by measurement.  However,
+printer gamuts are typically smaller than monitor gamuts, meaning that
+there can be many colors in a displayable image that cannot physically
+be printed.
+
+<p>Converting image data from one device to another generally results in
+gamut mismatches--colors that cannot be represented exactly on the
+destination device.  The process of making the colors fit, which can
+range from a simple clip to elaborate nonlinear scaling transformations,
+is termed gamut mapping.  The aim is to produce a reasonable visual
+representation of the original image.
+
+<h3>Further reading</h3>
+
+<h3><a name="CT.reading">14.11. Further reading</a></h3>
+
+<p>References <span class=ref>[<a href="PNG-References.html#B.COLOR-1">COLOR-1</a>]</span> 
+through
+<span class=ref>[<a href="PNG-References.html#B.COLOR-5">COLOR-5</a>]</span> 
+provide more detail about
+color theory.
+
+<hr>
+<a href="PNG-GammaAppendix.html">Previous page</a>
+<br>
+<a href="PNG-CRCAppendix.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+</BODY>
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-ColorAppendix.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+</HTML>

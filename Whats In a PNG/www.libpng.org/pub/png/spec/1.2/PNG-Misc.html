@@ -1,0 +1,161 @@
+<!doctype html public "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<html lang="en">
+
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Misc.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+<head>
+
+<TITLE>PNG Specification: Miscellaneous Topics</TITLE>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+
+
+
+
+
+
+
+
+<h1>PNG (Portable Network Graphics) Specification, Version 1.2</h1>
+
+
+
+<hr>
+<a href="PNG-Ordering.html">Previous page</a>
+<br>
+<a href="PNG-Encoders.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+<h2><a name="Misc">8. Miscellaneous Topics</a></h2>
+
+<h3><a name="File-name-extension">8.1. File name extension</a></h3>
+
+<p>On systems where file names customarily include an extension
+signifying file type, the extension ".png" is recommended for
+PNG files.  Lowercase ".png" is preferred if file names are
+case-sensitive.
+
+<h3><a name="Media-type">8.2. Internet media type</a></h3>
+
+<p>The Internet Assigned Numbers Authority (IANA) has registered
+"image/png" as the Internet Media Type for PNG <span class=ref>[<a href="PNG-References.html#B.RFC-2045">RFC-2045</a>]</span>, 
+<span class=ref>[<a href="PNG-References.html#B.RFC-2048" >RFC-2048</a>]</span>.  
+For robustness, decoders may choose to also
+support the interim media type "image/x-png" that was in use before
+registration was complete.
+
+<h3><a name="Macintosh-file-layout">8.3. Macintosh file layout</a></h3>
+
+<p>In the Apple Macintosh system, the following conventions are
+recommended:
+
+<ul>
+
+<li>The four-byte file type code for PNG files is "PNGf".
+(This code has been registered with Apple for PNG files.)  The creator
+code will vary depending on the creating application.
+
+<p>
+
+<li>The contents of the data fork must be a PNG file exactly as
+described in the rest of this specification.
+
+<p>
+
+<li>The contents of the resource fork are unspecified.  It may be empty
+or may contain application-dependent resources.
+
+<p>
+
+<li>When transferring a Macintosh PNG file to a non-Macintosh system,
+only the data fork should be transferred.
+
+<p>
+
+</ul>
+
+<h3><a name="Multiple-image-extension">8.4. Multiple-image extension</a></h3>
+
+<p>PNG itself is strictly a single-image format.  However, it
+may be necessary to store multiple images within one file; for
+example, this is needed to convert GIF animation files.  The PNG Development
+Group has defined and approved a multiple-image format based on PNG, called 
+"Multiple-image Network Graphics (MNG)" <span class=ref>[<a href="PNG-References.html#B.MNG" >MNG</a>]</span>.
+This is considered a separate file format and has a different
+signature.  PNG-supporting applications may or may not choose to support
+the multiple-image format.
+
+<p>See Rationale: <a href="PNG-Rationale.html#R.Why-not-these-features">Why not these features?</a>.
+
+<h3><a name="Security-considerations">8.5. Security considerations</a></h3>
+
+<p>A PNG file or datastream is composed of a collection of explicitly
+typed "chunks".  Chunks whose contents are defined by the
+specification
+could actually contain anything, including malicious code.  But there
+is no known risk that such malicious code could be executed on the
+recipient's computer as a result of decoding the PNG image.
+
+<p>The possible security risks associated with private chunk types and
+future chunk types cannot be specified at this time.  Security issues
+will be considered when evaluating chunks proposed for registration
+as public chunks.  There is no additional security risk associated
+with unknown or unimplemented chunk types, because such chunks will be
+ignored, or at most be copied into another PNG file.
+
+<p>The <span class=cn>text</span> chunks contain keywords and data
+that is meant to be displayed as plain text.  The <span class=cn>iCCP</span>,
+<span class=cn>sPLT</span>,
+and some public "extension" chunks contain keywords meant to
+be displayed as plain text.  It is possible that if a decoder displays
+such text without filtering out control characters, especially the
+ESC (escape) character, certain systems or terminals could behave in
+undesirable and insecure ways.  We recommend that decoders filter out
+control characters to avoid this risk; see Recommendations for Decoders:
+<a href="PNG-Decoders.html#D.Text-chunk-processing">Text chunk processing</a>.
+
+<p>Every chunk begins with a length field, making it easier to
+write decoders invulnerable to fraudulent chunks that attempt to
+overflow buffers.  The CRC at the end of every chunk provides a
+robust defense against accidentally corrupted data.  Also, the PNG
+signature bytes provide early detection of common file transmission errors.
+
+<p>A decoder that fails to check CRCs could be subject to data
+corruption.  The only likely consequence of such corruption is
+incorrectly displayed pixels within the image.  Worse things might
+happen if the CRC of the <span class=cn>IHDR</span> chunk is not checked and the
+width or height fields are corrupted.  See Recommendations for Decoders:
+<a href="PNG-Decoders.html#D.Error-checking">Error checking</a>.
+
+<p>A poorly written decoder might be subject to buffer overflow, because
+chunks can be extremely large, up to <code class=expr><lp>2<sup>31</sup><rp>-1</code> bytes long.  But
+properly written decoders will handle large chunks without difficulty.
+
+<hr>
+<a href="PNG-Ordering.html">Previous page</a>
+<br>
+<a href="PNG-Encoders.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+</BODY>
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Misc.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+</HTML>

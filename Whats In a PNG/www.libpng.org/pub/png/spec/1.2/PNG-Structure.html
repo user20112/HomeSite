@@ -1,0 +1,297 @@
+<!doctype html public "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<html lang="en">
+
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Structure.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+<head>
+
+<TITLE>PNG Specification: File Structure</TITLE>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+
+
+
+
+
+
+
+
+<h1>PNG (Portable Network Graphics) Specification, Version 1.2</h1>
+
+
+
+<hr>
+<a href="PNG-DataRep.html">Previous page</a>
+<br>
+<a href="PNG-Chunks.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+<h2><a name="Structure">3. File Structure</a></h2>
+
+<p>A PNG file consists of a PNG <em>signature</em> followed by a series
+of <em>chunks</em>.  This chapter defines the signature and the basic
+properties of chunks.  Individual chunk types are discussed in the next
+chapter.
+
+<h3><a name="PNG-file-signature">3.1. PNG file signature</a></h3>
+
+<p>The first eight bytes of a PNG file always contain the following
+(decimal) values:
+
+<pre>
+   137 80 78 71 13 10 26 10
+</pre>
+
+<p>This signature indicates that the remainder of the file contains a
+single PNG image, consisting of a series of chunks beginning with an
+<span class=cn>IHDR</span> chunk and ending with an <span class=cn>IEND</span> chunk.
+
+<p>See Rationale: <a href="PNG-Rationale.html#R.PNG-file-signature">PNG file signature</a>.
+
+<h3><a name="Chunk-layout">3.2. Chunk layout</a></h3>
+
+<p>Each chunk consists of four parts:
+
+<dl>
+
+<dt><strong>Length</strong>
+
+<dd>A 4-byte unsigned integer giving the number of bytes in the chunk's
+data field.  The length counts <strong>only</strong> the data field,
+<strong>not</strong> itself, the chunk type code, or the CRC.  Zero is a
+valid length.  Although encoders and decoders should treat the length as
+unsigned, its value must not exceed <code class=expr><lp>2<sup>31</sup><rp>-1</code> bytes.
+
+<p>
+
+<dt><strong>Chunk Type</strong>
+
+<dd>A 4-byte chunk type code.  For convenience in description and
+in examining PNG files, type codes are restricted to consist of
+uppercase and lowercase ASCII letters (A-Z and
+a-z, or 65-90 and 97-122 decimal).  However,
+encoders and decoders must treat the codes as fixed binary values, not
+character strings.  For example, it would not be correct to represent
+the type code <span class=cn>IDAT</span> by the EBCDIC equivalents of those letters.
+Additional naming conventions for chunk types are discussed in the next
+section.
+
+<p>
+
+<dt><strong>Chunk Data</strong>
+
+<dd>The data bytes appropriate to the chunk type, if any.  This field
+can be of zero length.
+
+
+<p>
+
+<dt><strong>CRC</strong>
+
+<dd>A 4-byte CRC (Cyclic Redundancy Check) calculated on the preceding
+bytes in the chunk, including the chunk type code and chunk data
+fields, but <strong>not</strong> including the length field.  The
+CRC is always present, even for chunks containing no data.  See <a href="PNG-Structure.html#CRC-algorithm">CRC algorithm</a>.
+
+<p>
+
+</dl>
+
+<p>The chunk data length can be any number of bytes up to the maximum;
+therefore, implementors cannot assume that chunks are aligned on any
+boundaries larger than bytes.
+
+<p>Chunks can appear in any order, subject to the restrictions placed on
+each chunk type.  (One notable restriction is that <span class=cn>IHDR</span> must
+appear first and <span class=cn>IEND</span> must appear last; thus the <span class=cn>IEND</span>
+chunk serves as an end-of-file marker.)  Multiple chunks of the same
+type can appear, but only if specifically permitted for that type.
+
+<p>See Rationale: <a href="PNG-Rationale.html#R.Chunk-layout">Chunk layout</a>.
+
+<h3><a name="Chunk-naming-conventions">3.3. Chunk naming conventions</a></h3>
+
+<p>Chunk type codes are assigned so that a decoder can determine some
+properties of a chunk even when it does not recognize the type code.
+These rules are intended to allow safe, flexible extension of the PNG
+format, by allowing a decoder to decide what to do when it encounters an
+unknown chunk.  The naming rules are not normally of interest when the
+decoder does recognize the chunk's type.
+
+<p>Four bits of the type code, namely bit 5 (value 32) of each byte, are
+used to convey chunk properties.  This choice means that a human can
+read off the assigned properties according to whether each letter of the
+type code is uppercase (bit 5 is 0) or lowercase (bit 5 is 1).  However,
+decoders should test the properties of an unknown chunk by numerically
+testing the specified bits; testing whether a character is uppercase or
+lowercase is inefficient, and even incorrect if a locale-specific case
+definition is used.
+
+<p>It is worth noting that the property bits are an inherent part of the
+chunk name, and hence are fixed for any chunk type.  Thus, <span class=cn>BLOB</span>
+and <span class=cn>bLOb</span> would be unrelated chunk type codes, not the same
+chunk with different properties.  Decoders must recognize type codes by
+a simple four-byte literal comparison; it is incorrect to perform case
+conversion on type codes.
+
+
+<p>The semantics of the property bits are:
+
+<dl>
+
+<dt><strong>Ancillary bit: bit 5 of first byte</strong>
+
+<dd>0 (uppercase) = critical, 1 (lowercase) = ancillary.
+
+<p>Chunks that are not strictly necessary in order to meaningfully
+display the contents of the file are known as "ancillary" chunks.
+A decoder encountering an unknown chunk in which the ancillary bit is 1
+can safely ignore the chunk and proceed to display the image.  The time
+chunk (<span class=cn>tIME</span>) is an example of an ancillary chunk.
+
+<p>Chunks that are necessary for successful display of the file's
+contents are called "critical" chunks.  A decoder encountering
+an unknown
+chunk in which the ancillary bit is 0 must indicate to the user that the
+image contains information it cannot safely interpret.  The image header
+chunk (<span class=cn>IHDR</span>) is an example of a critical chunk.
+
+<p>
+
+<dt><strong>Private bit: bit 5 of second byte</strong>
+
+<dd>0 (uppercase) = public, 1 (lowercase) = private.
+
+<p>A public chunk is one that is part of the PNG specification
+or is registered in the list of PNG special-purpose public chunk
+types.  Applications can also define private (unregistered) chunks
+for their own purposes.  The names of private chunks must have a
+lowercase second letter, while public chunks will always be assigned
+names with uppercase second letters.  Note that decoders do not need
+to test the private-chunk property bit, since it has no functional
+significance; it is simply an administrative convenience to ensure
+that public and private chunk names will not conflict.  See <a href="PNG-Chunks.html#C.Additional-chunk-types">Additional chunk types</a>, 
+and
+Recommendations for Encoders: <a href="PNG-Encoders.html#E.Use-of-private-chunks">Use of private chunks</a>.
+
+<p>
+
+<dt><strong>Reserved bit: bit 5 of third byte</strong>
+
+<dd>Must be 0 (uppercase) in files conforming to this version of PNG.
+
+<p>The significance of the case of the third letter of the chunk name is
+reserved for possible future expansion.  At the present time all chunk
+names must have uppercase third letters.  (Decoders should not complain
+about a lowercase third letter, however, as some future version of the
+PNG specification could define a meaning for this bit.  It is sufficient
+to treat a chunk with a lowercase third letter in the same way as any
+other unknown chunk type.)
+
+<p>
+
+<dt><strong>Safe-to-copy bit: bit 5 of fourth byte</strong>
+
+<dd>0 (uppercase) = unsafe to copy, 1 (lowercase) = safe to copy.
+
+<p>This property bit is not of interest to pure decoders, but it is
+needed by PNG editors (programs that modify PNG files).  This bit
+defines the proper handling of unrecognized chunks in a file that is
+being modified.
+
+<p>If a chunk's safe-to-copy bit is 1, the chunk may be copied to a
+modified PNG file whether or not the software recognizes the chunk type,
+and regardless of the extent of the file modifications.
+
+<p>If a chunk's safe-to-copy bit is 0, it indicates that the chunk
+depends on the image data.  If the program has made <em>any</em> changes
+to <em>critical</em> chunks, including addition, modification, deletion,
+or reordering of critical chunks, then unrecognized unsafe chunks must
+<strong>not</strong> be copied to the output PNG file.  (Of course, if
+the program <strong>does</strong> recognize the chunk, it can choose to
+output an appropriately modified version.)
+
+<p>A PNG editor is always allowed to copy all unrecognized chunks if
+it has only added, deleted, modified, or reordered <em>ancillary</em>
+chunks.  This implies that it is not permissible for ancillary chunks to
+depend on other ancillary chunks.
+
+<p>PNG editors that do not recognize a <em>critical</em> chunk must
+report an error and refuse to process that PNG file at all.  The
+safe/unsafe mechanism is intended for use with ancillary chunks.  The
+safe-to-copy bit will always be 0 for critical chunks.
+
+<p>Rules for PNG editors are discussed further in <a href="PNG-Ordering.html" >Chunk Ordering Rules</a>.
+
+<p>
+
+</dl>
+
+<p>For example, the hypothetical chunk type name <span class=cn>bLOb</span> has the
+property bits:
+
+<pre>
+   bLOb  &lt;-- 32 bit chunk type code represented in text form
+   ||||
+   |||+- Safe-to-copy bit is 1 (lowercase letter; bit 5 is 1)
+   ||+-- Reserved bit is 0     (uppercase letter; bit 5 is 0)
+   |+--- Private bit is 0      (uppercase letter; bit 5 is 0)
+   +---- Ancillary bit is 1    (lowercase letter; bit 5 is 1)
+</pre>
+
+<p>Therefore, this name represents an ancillary, public, safe-to-copy
+chunk.
+
+<p>See Rationale: <a href="PNG-Rationale.html#R.Chunk-naming-conventions">Chunk naming conventions</a>.
+
+<h3><a name="CRC-algorithm">3.4. CRC algorithm</a></h3>
+
+<p>Chunk CRCs are calculated using standard CRC methods with pre and
+post conditioning, as defined by ISO 3309 <span class=ref>[<a href="PNG-References.html#B.ISO-3309" >ISO-3309</a>]</span> 
+or ITU-T V.42 <span class=ref>[<a href="PNG-References.html#B.ITU-T-V42" >ITU-T-V42</a>]</span>.  
+The CRC polynomial employed is
+
+<pre>
+   <code class=expr>x^32+x^26+x^23+x^22+x^16+x^12+x^11+x^10+x^8+x^7+x^5+x^4+x^2+x+1</code>
+</pre>
+
+<p>The 32-bit CRC register is initialized to all 1's, and then the data
+from each byte is processed from the least significant bit (1) to the
+most significant bit (128).  After all the data bytes are processed,
+the CRC register is inverted (its ones complement is taken).  This
+value is transmitted (stored in the file) MSB first.  For the purpose
+of separating into bytes and ordering, the least significant bit of the
+32-bit CRC is defined to be the coefficient of the
+<code class=expr>x<sup>31</sup></code> term.
+
+<p>Practical calculation of the CRC always employs a precalculated table
+to greatly accelerate the computation.  See <a href="PNG-CRCAppendix.html">Sample CRC Code</a>.
+
+<hr>
+<a href="PNG-DataRep.html">Previous page</a>
+<br>
+<a href="PNG-Chunks.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+</BODY>
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Structure.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+</HTML>

@@ -1,0 +1,142 @@
+<!doctype html public "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<html lang="en">
+
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Compression.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+<head>
+
+<TITLE>PNG Specification: Deflate/Inflate Compression</TITLE>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+
+
+
+
+
+
+
+
+<h1>PNG (Portable Network Graphics) Specification, Version 1.2</h1>
+
+
+
+<hr>
+<a href="PNG-Chunks.html">Previous page</a>
+<br>
+<a href="PNG-Filters.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+<h2><a name="Compression">5. Deflate/Inflate Compression</a></h2>
+
+<p>PNG compression method 0 (the only compression method presently
+defined for PNG) specifies deflate/inflate compression with a sliding
+window of at most 32768 bytes.  Deflate compression is an LZ77
+derivative used in zip, gzip, pkzip, and related programs.  Extensive
+research has been done supporting its patent-free status.  Portable C
+implementations are freely available.
+
+<p>Deflate-compressed datastreams within PNG are stored in
+the "zlib" format, which has the structure:
+
+<pre>
+   Compression method/flags code: 1 byte
+   Additional flags/check bits:   1 byte
+   Compressed data blocks:        n bytes
+   Check value:                   4 bytes
+</pre>
+
+<p>Further details on this format are given in the zlib specification
+<span class=ref>[<a href="PNG-References.html#B.RFC-1950">RFC-1950</a>]</span>.
+
+<p>For PNG compression method 0, the zlib compression method/flags code
+must specify method code 8 ("deflate" compression) and an LZ77
+window size of not more than 32768 bytes.  Note that the zlib compression
+method number is not the same as the PNG compression method number.  The
+additional flags must not specify a preset dictionary.  A PNG decoder
+must be able to decompress any valid zlib datastream that satisfies
+these additional constraints.
+
+<p>If the data to be compressed contains 16384 bytes or fewer, the
+encoder can set the window size by rounding up to a power of 2 (256
+minimum).  This decreases the memory required not only for encoding but
+also for decoding, without adversely affecting the compression ratio.
+
+<p>The compressed data within the zlib datastream is stored as a
+series of blocks, each of which can represent raw (uncompressed)
+data, LZ77-compressed data encoded with fixed Huffman codes, or
+LZ77-compressed data encoded with custom Huffman codes.  A marker bit in
+the final block identifies it as the last block, allowing the decoder
+to recognize the end of the compressed datastream.  Further details on
+the compression algorithm and the encoding are given in the deflate
+specification <span class=ref>[<a href="PNG-References.html#B.RFC-1951">RFC-1951</a>]</span>.
+
+<p>The check value stored at the end of the zlib datastream is
+calculated on the uncompressed data represented by the datastream.  Note
+that the algorithm used is not the same as the CRC calculation used
+for PNG chunk check values.  The zlib check value is useful mainly as
+a cross-check that the deflate and inflate algorithms are implemented
+correctly.  Verifying the chunk CRCs provides adequate confidence that
+the PNG file has been transmitted undamaged.
+
+<p>In a PNG file, the concatenation of the contents of all the
+<span class=cn>IDAT</span> chunks makes up a zlib datastream as specified above.
+This datastream decompresses to filtered image data as described
+elsewhere in this document.
+
+<p>It is important to emphasize that the boundaries between
+<span class=cn>IDAT</span> chunks are arbitrary and can fall anywhere in the
+zlib datastream.  There is not necessarily any correlation between
+<span class=cn>IDAT</span> chunk boundaries and deflate block boundaries or any other
+feature of the zlib data.  For example, it is entirely possible for the
+terminating zlib check value to be split across <span class=cn>IDAT</span> chunks.
+
+
+<p>In the same vein, there is no required correlation between the
+structure of the image data (i.e., scanline boundaries) and deflate
+block boundaries or <span class=cn>IDAT</span> chunk boundaries.  The complete image
+data is represented by a single zlib datastream that is stored in
+some number of <span class=cn>IDAT</span> chunks; a decoder that assumes any more
+than this is incorrect.  (Of course, some encoder implementations may
+emit files in which some of these structures are indeed related.  But
+decoders cannot rely on this.)
+
+<p>PNG also uses zlib datastreams in <span class=cn>iTXt</span>, <span class=cn>zTXt</span>, and
+<span class=cn>iCCP</span>
+chunks, where the remainder of the chunk following the compression
+method byte is a zlib datastream as specified above.  Unlike the image
+data, such datastreams are not split across chunks; each <span class=cn>iTXt</span>,
+<span class=cn>zTXt</span>,
+or <span class=cn>iCCP</span> chunk contains an independent zlib datastream.
+
+<p>Additional documentation and portable C code for deflate
+and inflate are available from the Info-ZIP archives
+at <span class=url><a href="ftp://ftp.info-zip.org/pub/infozip/" >ftp://ftp.info-zip.org/pub/infozip/</a></span>.
+
+<hr>
+<a href="PNG-Chunks.html">Previous page</a>
+<br>
+<a href="PNG-Filters.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+</BODY>
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Compression.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+</HTML>

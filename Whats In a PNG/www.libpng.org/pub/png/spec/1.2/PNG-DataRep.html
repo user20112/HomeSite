@@ -1,0 +1,345 @@
+<!doctype html public "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<html lang="en">
+
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-DataRep.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+<head>
+
+<TITLE>PNG Specification: Data Representation</TITLE>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+
+
+
+
+
+
+
+
+<h1>PNG (Portable Network Graphics) Specification, Version 1.2</h1>
+
+
+
+<hr>
+<a href="PNG-Introduction.html">Previous page</a>
+<br>
+<a href="PNG-Structure.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+<h2><a name="DataRep">2. Data Representation</a></h2>
+
+<p>This chapter discusses basic data representations used in PNG files,
+as well as the expected representation of the image data.
+
+<h3><a name="DR.Integers-and-byte-order">2.1. Integers and byte order</a></h3>
+
+<p>All integers that require more than one byte must be in network
+byte order: the most significant byte comes first, then the less
+significant bytes in descending order of significance (MSB LSB for
+two-byte integers, B3 B2 B1 B0 for four-byte integers).  The highest
+bit (value 128) of a byte is numbered bit 7; the lowest bit (value 1)
+is numbered bit 0.  Values are unsigned unless otherwise noted.  Values
+explicitly noted as signed are represented in two's complement notation.
+
+<p>Unless otherwise stated, four-byte unsigned integers are limited to
+the range <code class=expr>0</code> to <code class=expr><lp>2<sup>31</sup><rp>-1</code> to accommodate languages
+that have difficulty
+with unsigned four-byte values.  Similarly, four-byte signed integers
+are limited to the range <code class=expr>-(<lp>2<sup>31</sup><rp>-1)</code> to <code class=expr><lp>2<sup>31</sup><rp>-1</code> to
+accommodate languages that have difficulty with the value <code class=expr>-2<sup>31</sup></code>.
+
+<p>See Rationale: <a href="PNG-Rationale.html#R.Byte-order">Byte order</a>.
+
+<h3><a name="DR.Color-values">2.2. Color values</a></h3>
+
+<p>Colors can be represented by either grayscale or RGB (red, green,
+blue) sample data.  Grayscale data represents luminance; RGB data
+represents calibrated color information (if the <span class=cn>cHRM</span> chunk
+is present) or uncalibrated device-dependent color (if <span class=cn>cHRM</span>
+is absent).  All color values range from zero (representing black) to
+most intense at the maximum value for the sample depth.  Note that
+the maximum value at a given sample depth is <code class=expr><lp>2<sup>sampledepth</sup><rp>-1</code>, not
+<code class=expr>2<sup>sampledepth</sup></code>.
+
+<p>Sample values are not necessarily proportional to light intensity;
+the <span class=cn>gAMA</span> chunk specifies the relationship between sample values
+and display output intensity, and viewers are strongly encouraged
+to compensate properly.  See <a href="PNG-DataRep.html#DR.Gamma-correction">Gamma correction</a>.
+
+<p>Source data with a precision not directly supported in PNG (for
+example, 5 bit/sample truecolor) must be scaled up to the next higher
+supported bit depth.  This scaling is reversible with no loss of data,
+and it reduces the number of cases that decoders have to cope with.
+See Recommendations for Encoders: <a href="PNG-Encoders.html#E.Sample-depth-scaling" >Sample depth scaling</a> 
+and Recommendations for Decoders: <a href="PNG-Decoders.html#D.Sample-depth-rescaling">Sample depth rescaling</a>.
+
+<h3><a name="DR.Image-layout">2.3. Image layout</a></h3>
+
+<p>Conceptually, a PNG image is a rectangular pixel array, with
+pixels appearing left-to-right within each scanline, and scanlines
+appearing top-to-bottom.  (For progressive display purposes, the
+data may actually be transmitted in a different order; see <a href="PNG-DataRep.html#DR.Interlaced-data-order">Interlaced data order</a>.)  
+The size
+of each pixel is determined by the <em>bit depth</em>, which is the
+number of bits per sample in the image data.
+
+<p>Three types of pixel are supported:
+
+<ul>
+
+<li>An <em>indexed-color</em> pixel is represented by a single sample
+that is an index into a supplied palette.  The image bit depth
+determines the maximum number of palette entries, but not the color
+precision within the palette.
+
+<p>
+
+<li>A <em>grayscale</em> pixel is represented by a single sample that is
+a grayscale level, where zero is black and the largest value for the bit
+depth is white.
+
+<p>
+
+<li>A <em>truecolor</em> pixel is represented by three samples: red
+(zero = black, max = red) appears first, then green (zero = black, max =
+green), then blue (zero = black, max = blue).  The bit depth specifies
+the size of each sample, not the total pixel size.
+
+<p>
+
+</ul>
+
+<p>Optionally, grayscale and truecolor pixels can also include an alpha
+sample, as described in the next section.
+
+<p>Pixels are always packed into scanlines with no wasted bits between
+pixels.  Pixels smaller than a byte never cross byte boundaries; they
+are packed into bytes with the leftmost pixel in the high-order bits of
+a byte, the rightmost in the low-order bits.  Permitted bit depths and
+pixel types are restricted so that in all cases the packing is simple
+and efficient.
+
+<p>PNG permits multi-sample pixels only with 8- and 16-bit samples, so
+multiple samples of a single pixel are never packed into one byte.  All
+16-bit samples are stored in network byte order (MSB first).
+
+<p>Scanlines always begin on byte boundaries.  When pixels have fewer
+than 8 bits and the scanline width is not evenly divisible by the number
+of pixels per byte, the low-order bits in the last byte of each scanline
+are wasted.  The contents of these wasted bits are unspecified.
+
+<p>An additional "filter-type" byte is added to the beginning
+of every
+scanline (see <a href="PNG-DataRep.html#DR.Filtering">Filtering</a>).  
+The filter-type
+byte is not considered part of the image data, but it is included in the
+datastream sent to the compression step.
+
+<h3><a name="DR.Alpha-channel">2.4. Alpha channel</a></h3>
+
+<p>An alpha channel, representing transparency information on a
+per-pixel basis, can be included in grayscale and truecolor PNG images.
+
+<p>An alpha value of zero represents full transparency, and a value of
+<code class=expr><lp>2<sup>bitdepth</sup><rp>-1</code> represents a fully opaque pixel.
+Intermediate values
+indicate partially transparent pixels that can be combined with a
+background image to yield a composite image.  (Thus, alpha is really
+the degree of opacity of the pixel.  But most people refer to alpha as
+providing transparency information, not opacity information, and we
+continue that custom here.)
+
+<p>Alpha channels can be included with images that have either 8 or
+16 bits per sample, but not with images that have fewer than 8 bits
+per sample.  Alpha samples are represented with the same bit depth
+used for the image samples.  The alpha sample for each pixel is stored
+immediately following the grayscale or RGB samples of the pixel.
+
+
+<p>The color values stored for a pixel are not affected by the
+alpha value assigned to the pixel.  This rule is sometimes called
+"unassociated" or "non-premultiplied" alpha.
+(Another common technique
+is to store sample values premultiplied by the alpha fraction; in
+effect, such an image is already composited against a black background.
+PNG does <em>not</em> use premultiplied alpha.)
+
+<p>Transparency control is also possible without the storage cost of
+a full alpha channel.  In an indexed-color image, an alpha value can
+be defined for each palette entry.  In grayscale and truecolor images,
+a single pixel value can be identified as being "transparent".
+These techniques are controlled by the <span class=cn>tRNS</span> ancillary chunk type.
+
+<p>If no alpha channel nor <span class=cn>tRNS</span> chunk is present, all pixels in
+the image are to be treated as fully opaque.
+
+<p>Viewers can support transparency control partially, or not at all.
+
+<p>See Rationale: <a href="PNG-Rationale.html#R.Non-premultiplied-alpha" >Non-premultiplied alpha</a>, 
+Recommendations for Encoders: <a href="PNG-Encoders.html#E.Alpha-channel-creation">Alpha channel creation</a>, 
+and
+Recommendations for Decoders: <a href="PNG-Decoders.html#D.Alpha-channel-processing" >Alpha channel processing</a>.
+
+<h3><a name="DR.Filtering">2.5. Filtering</a></h3>
+
+<p>PNG allows the image data to be <em>filtered</em> before it is
+compressed.  Filtering can improve the compressibility of the data.
+The filter step itself does not reduce the size of the data.  All PNG
+filters are strictly lossless.
+
+<p>PNG defines several different filter algorithms,
+including "None"
+which indicates no filtering.  The filter algorithm is specified for
+each scanline by a filter-type byte that precedes the filtered scanline
+in the precompression datastream.  An intelligent encoder can switch
+filters from one scanline to the next.  The method for choosing which
+filter to employ is up to the encoder.
+
+<p>See <a href="PNG-Filters.html">Filter Algorithms</a> 
+and Rationale: <a href="PNG-Rationale.html#R.Filtering">Filtering</a>.
+
+<h3><a name="DR.Interlaced-data-order">2.6. Interlaced data order</a></h3>
+
+<p>A PNG image can be stored in interlaced order to allow progressive
+display.  The purpose of this feature is to allow images
+to "fade in"
+when they are being displayed on-the-fly.  Interlacing slightly expands
+the file size on average, but it gives the user a meaningful display
+much more rapidly.  Note that decoders are required to be able to read
+interlaced images, whether or not they actually perform progressive
+display.
+
+<p>With interlace method 0, pixels are stored sequentially from left to
+right, and scanlines sequentially from top to bottom (no interlacing).
+
+<p>Interlace method 1, known as Adam7 after its author, Adam
+M. Costello, consists of seven distinct passes over the image.  Each
+pass transmits a subset of the pixels in the image.  The pass in which
+each pixel is transmitted is defined by replicating the following 8-by-8
+pattern over the entire image, starting at the upper left corner:
+
+<pre>
+   1 6 4 6 2 6 4 6
+   7 7 7 7 7 7 7 7
+   5 6 5 6 5 6 5 6
+   7 7 7 7 7 7 7 7
+   3 6 4 6 3 6 4 6
+   7 7 7 7 7 7 7 7
+   5 6 5 6 5 6 5 6
+   7 7 7 7 7 7 7 7
+</pre>
+
+<p>Within each pass, the selected pixels are transmitted left to
+right within a scanline, and selected scanlines sequentially from top
+to bottom.  For example, pass 2 contains pixels 4, 12, 20, etc. of
+scanlines 0, 8, 16, etc. (numbering from 0,0 at the upper left corner).
+The last pass contains the entirety of scanlines 1, 3, 5, etc.
+
+<p><strong>The data within each pass is laid out as though it were a
+complete image of the appropriate dimensions.</strong>  For example, if
+the complete image is 16 by 16 pixels, then pass 3 will contain two
+scanlines, each containing four pixels.  When pixels have fewer than 8
+bits, each such scanline is padded as needed to fill an integral number
+of bytes (see <a href="PNG-DataRep.html#DR.Image-layout">Image layout</a>).  
+Filtering
+is done on this reduced image in the usual way, and a filter-type byte
+is transmitted before each of its scanlines (see <a href="PNG-Filters.html" >Filter Algorithms</a>).  
+Notice that the transmission order is defined
+so that all the scanlines transmitted in a pass will have the same
+number of pixels; this is necessary for proper application of some of
+the filters.
+
+<p><strong>Caution:</strong> If the image contains fewer than five
+columns or fewer than five rows, some passes will be entirely empty.
+Encoders and decoders must handle this case correctly.  In particular,
+filter-type bytes are associated only with nonempty scanlines; no
+filter-type bytes are present in an empty pass.
+
+<p>See Rationale: <a href="PNG-Rationale.html#R.Interlacing">Interlacing</a> 
+and
+Recommendations for Decoders: <a href="PNG-Decoders.html#D.Progressive-display" >Progressive display</a>.
+
+<h3><a name="DR.Gamma-correction">2.7. Gamma correction</a></h3>
+
+<p>PNG images can specify, via the <span class=cn>gAMA</span> chunk, the power
+function relating the desired display output with the image samples.
+Display programs are strongly encouraged to use this information, plus
+information about the display system they are using, to present the
+image to the viewer in a way that reproduces what the image's original
+author saw as closely as possible.  See <a href="PNG-GammaAppendix.html">Gamma Tutorial</a> 
+if you aren't already familiar with gamma issues.
+
+<p>Gamma correction is not applied to the alpha channel, if any.  Alpha
+samples always represent a linear fraction of full opacity.
+
+<p>For high-precision applications, the exact chromaticity of the RGB
+data in a PNG image can be specified via the <span class=cn>cHRM</span> chunk,
+allowing more accurate color matching than gamma correction alone
+will provide.  If the RGB data conforms to the sRGB specification
+<span class=ref>[<a href="PNG-References.html#B.sRGB">sRGB</a>]</span>, 
+this can be indicated with
+the <span class=cn>sRGB</span> chunk, enabling even more accurate reproduction.
+Alternatively, the <span class=cn>iCCP</span> chunk can be used to embed an ICC profile
+<span class=ref>[<a href="PNG-References.html#B.ICC">ICC</a>]</span> 
+containing detailed color space
+information.  See <a href="PNG-ColorAppendix.html">Color Tutorial</a> 
+if you
+aren't already familiar with color representation issues.
+
+<p>See Rationale: <a href="PNG-Rationale.html#R.Why-gamma">Why gamma?</a>,
+Recommendations for Encoders: <a href="PNG-Encoders.html#E.Encoder-gamma-handling" >Encoder gamma handling</a>, 
+and Recommendations for Decoders: <a href="PNG-Decoders.html#D.Decoder-gamma-handling">Decoder gamma handling</a>.
+
+<h3><a name="DR.Text-strings">2.8. Text strings</a></h3>
+
+<p>A PNG file can store text associated with the image, such as an image
+description or copyright notice.  Keywords are used to indicate what
+each text string represents.
+
+<p>ISO/IEC 8859-1 (Latin-1) is the character set recommended for use in
+the text strings appearing in <span class=cn>tEXt</span> and <span class=cn>zTXt</span>
+chunks <span class=ref>[<a href="PNG-References.html#B.I-8859-1">ISO/IEC-8859-1</a>]</span>.  
+It
+is a superset of 7-bit ASCII.  If it is
+necessary to convey characters outside of the Latin-1 set, the
+<span class=cn>iTXt</span> chunk should be used instead.
+
+<p>Character codes not defined in Latin-1 should not be used in
+<span class=cn>tEXt</span> and <span class=cn>zTXt</span> chunks, because
+they have no platform-independent meaning.  If a non-Latin-1 code
+does appear in a PNG text string, its interpretation will vary across
+platforms and decoders.  Some systems might not even be able to display
+all the characters in Latin-1, but most modern systems can.
+
+<p>Provision is also made for the storage of compressed text.
+
+<p>See Rationale: <a href="PNG-Rationale.html#R.Text-strings">Text strings</a>.
+
+<hr>
+<a href="PNG-Introduction.html">Previous page</a>
+<br>
+<a href="PNG-Structure.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+</BODY>
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-DataRep.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+</HTML>

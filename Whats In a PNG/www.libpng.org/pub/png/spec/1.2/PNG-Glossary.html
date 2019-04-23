@@ -1,0 +1,377 @@
+<!doctype html public "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<html lang="en">
+
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Glossary.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+<head>
+
+<TITLE>PNG Specification: Glossary</TITLE>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+
+
+
+
+
+
+
+
+<h1>PNG (Portable Network Graphics) Specification, Version 1.2</h1>
+
+
+
+<hr>
+<a href="PNG-Decoders.html">Previous page</a>
+<br>
+<a href="PNG-Rationale.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+<h2><a name="Glossary">11. Glossary</a></h2>
+
+<dl>
+
+<dt><strong><code class=expr>a<sup>b</sup></code></strong>
+<span class=html40>or <code class=expr>a^b</code></span>
+
+<dd>Exponentiation; <code class=expr>a</code> raised to the power <code class=expr>b</code>.
+Note that zero raised to any positive power is zero.
+C programmers should be careful not
+to misread this notation as exclusive-or.
+
+<p>
+
+<dt><strong>Alpha</strong>
+
+<dd>A value representing a pixel's degree of transparency.  The more
+transparent a pixel, the less it hides the background against which the
+image is presented.  In PNG, alpha is really the degree of opacity:
+zero alpha represents a completely transparent pixel, maximum alpha
+represents a completely opaque pixel.  But most people refer to alpha
+as providing transparency information, not opacity information, and we
+continue that custom here.
+
+<p>
+
+<dt><strong>Ancillary chunk</strong>
+
+<dd>A chunk that provides additional information.  A decoder can still
+produce a meaningful image, though not necessarily the best possible
+image, without processing the chunk.
+
+<p>
+
+<dt><strong>Bit depth</strong>
+
+<dd>The number of bits per palette index (in indexed-color PNGs) or per
+sample (in other color types).  This is the same value that appears in
+<span class=cn>IHDR</span>.
+
+<p>
+
+<dt><strong>Byte</strong>
+
+<dd>Eight bits; also called an octet.
+
+<p>
+
+<dt><strong>Channel</strong>
+
+<dd>The set of all samples of the same kind within an image; for
+example, all the blue samples in a truecolor image.  (The term
+"component" is also used, but not in this specification.)
+A sample is the intersection of a channel and a pixel.
+
+<p>
+
+<dt><strong>Chromaticity</strong>
+
+<dd>A pair of values <code class=expr>x,y</code> that precisely specify a color,
+except for the brightness information.
+
+<p>
+
+<dt><strong>Chunk</strong>
+
+<dd>A section of a PNG file.  Each chunk has a type indicated by its
+chunk type name.  Most types of chunks also include some data.  The
+format and meaning of the data within the chunk are determined by the
+type name.
+
+<p>
+
+<dt><strong>CIE</strong>
+
+<dd>International Commission on Illumination (Commission Internationale
+de l'&Eacute;clairage).
+
+<p>
+
+<dt><strong>CIE XYZ</strong>
+
+<dd>A device-independent color space in which each component is the
+sum of a weighted power distribution over the visible spectrum.  The Y
+component is luminence (see below).
+
+<p>
+
+<dt><strong>CIE LAB</strong>
+
+<dd>A perceptually linear color space.
+
+<p>
+
+<dt><strong>Composite</strong>
+
+<dd>As a verb, to form an image by merging a foreground image and a
+background image, using transparency information to determine where
+the background should be visible.  The foreground image is said to be
+"composited against" the background.
+
+<p>
+
+<dt><strong>CRC</strong>
+
+<dd>Cyclic Redundancy Check.  A CRC is a type of check value designed to
+catch most transmission errors.  A decoder calculates the CRC for the
+received data and compares it to the CRC that the encoder calculated,
+which is appended to the data.  A mismatch indicates that the data was
+corrupted in transit.
+
+<p>
+
+<dt><strong>Critical chunk</strong>
+
+<dd>A chunk that must be understood and processed by the decoder in
+order to produce a meaningful image from a PNG file.
+
+<p>
+
+<dt><strong>CRT</strong>
+
+<dd>Cathode Ray Tube: a common type of computer display hardware.
+
+<p>
+
+<dt><strong>Datastream</strong>
+
+<dd>A sequence of bytes.  This term is used rather than "file" to
+describe a byte sequence that is only a portion of a file.  We also use
+it to emphasize that a PNG image might be generated and consumed
+"on-the-fly", never appearing in a stored file at all.
+
+<p>
+
+<dt><strong>Deflate</strong>
+
+<dd>The name of the compression algorithm used in standard PNG files, as
+well as in zip, gzip, pkzip, and other compression programs.  Deflate is
+a member of the LZ77 family of compression methods.
+
+<p>
+
+<dt><strong>Filter</strong>
+
+<dd>A transformation applied to image data in hopes of improving its
+compressibility.  PNG uses only lossless (reversible) filter algorithms.
+
+<p>
+
+<dt><strong>Frame buffer</strong>
+
+<dd>The final digital storage area for the image shown by a computer
+display.  Software causes an image to appear onscreen by loading it into
+the frame buffer.
+
+<p>
+
+<dt><strong>Gamma</strong>
+
+<dd>Informally, a measure of the brightness of mid-level tones in an
+image.  Outside this specification, the term "gamma" is often used as
+the exponent of a power function that is the transfer function of any
+stage(s) of an imaging pipeline:
+
+<pre>
+   <code class=expr>output = input ^ gamma</code>
+</pre>
+
+<p>where both input and output are scaled to the range 0 to 1.  Within
+this specification, gamma refers specifically to the function from
+display output to image samples.
+
+<p>
+
+<dt><strong>Grayscale</strong>
+
+<dd>An image representation in which each pixel is represented by a
+single sample value representing overall luminance (on a scale from
+black to white).  PNG also permits an alpha sample to be stored for each
+pixel of a grayscale image.
+
+<p>
+
+<dt><strong>Indexed color</strong>
+
+<dd>An image representation in which each pixel is represented by a
+single sample that is an index into a palette or lookup table.  The
+selected palette entry defines the actual color of the pixel.
+
+<p>
+
+<dt><strong>Intensity</strong>
+
+<dd>Power per unit area of light entering or leaving a surface.  It is
+often normalized to the range 0 to 1 by dividing by a maximum intensity.
+
+<p>
+
+<dt><strong>Lossless compression</strong>
+
+<dd>Any method of data compression that guarantees the original data can
+be reconstructed exactly, bit-for-bit.
+
+
+<p>
+
+<dt><strong>Lossy compression</strong>
+
+<dd>Any method of data compression that reconstructs the original data
+approximately, rather than exactly.
+
+<p>
+
+<dt><strong>LSB</strong>
+
+<dd>Least Significant Byte of a multi-byte value.
+
+<p>
+
+<dt><strong>Luminance</strong>
+
+<dd>Perceived brightness, or grayscale level, of a color.  Luminance and
+chromaticity together fully define a perceived color.
+
+<p>
+
+<dt><strong>LUT</strong>
+
+<dd>Look Up Table.  In general, a table used to transform data.  In
+frame buffer hardware, a LUT can be used to map indexed-color pixels
+into a selected set of truecolor values, or to perform gamma correction.
+In software, a LUT can be used as a fast way of implementing any
+one-variable mathematical function.
+
+<p>
+
+<dt><strong>MSB</strong>
+
+<dd>Most Significant Byte of a multi-byte value.
+
+<p>
+
+<dt><strong>Palette</strong>
+
+<dd>The set of colors available in an indexed-color image.  In PNG,
+a palette is an array of colors defined by red, green, and blue
+samples.  (Alpha values can also be defined for palette entries, via the
+<span class=cn>tRNS</span> chunk.)
+
+<p>
+
+<dt><strong>Pixel</strong>
+
+<dd>The information stored for a single grid point in the image.  The
+complete image is a rectangular array of pixels.
+
+<p>
+
+<dt><strong>PNG editor</strong>
+
+<dd>A program that modifies a PNG file and preserves ancillary
+information, including chunks that it does not recognize.  Such a
+program must obey the rules given in <a href="PNG-Ordering.html">Chunk Ordering Rules</a>.
+
+<p>
+
+<dt><strong>Sample</strong>
+
+<dd>A single number in the image data; for example, the red value of a
+pixel.  A pixel is composed of one or more samples.  When discussing
+physical data layout (in particular, in <a href="PNG-DataRep.html#DR.Image-layout">Image layout</a>), 
+we use "sample" to mean a number stored in the image
+array.  It would be more precise but much less readable to say "sample
+or palette index" in that context.  Elsewhere in the specification,
+"sample" means a color value or alpha value.  In the indexed-color case,
+these are palette entries not palette indexes.
+
+<p>
+
+<dt><strong>Sample depth</strong>
+
+<dd>The precision, in bits, of color values and alpha values.  In
+indexed-color PNGs the sample depth is always 8 by definition of the
+<span class=cn>PLTE</span> chunk.  In other color types it is the same as the bit
+depth.
+
+<p>
+
+<dt><strong>Scanline</strong>
+
+<dd>One horizontal row of pixels within an image.
+
+<p>
+
+<dt><strong>Truecolor</strong>
+
+<dd>An image representation in which pixel colors are defined by
+storing three samples for each pixel, representing red, green, and blue
+intensities respectively.  PNG also permits an alpha sample to be stored
+for each pixel of a truecolor image.
+
+<p>
+
+<dt><strong>White point</strong>
+
+<dd>The chromaticity of a computer display's nominal white value.
+
+<p>
+
+<dt><strong>zlib</strong>
+
+<dd>A particular format for data that has been compressed using
+deflate-style compression.  Also the name of a library implementing this
+method.  PNG implementations need not use the zlib library, but they
+must conform to its format for compressed data.
+
+<p>
+
+</dl>
+
+<hr>
+<a href="PNG-Decoders.html">Previous page</a>
+<br>
+<a href="PNG-Rationale.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+</BODY>
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Glossary.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+</HTML>

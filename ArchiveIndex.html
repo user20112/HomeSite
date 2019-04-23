@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Archived Tutorials</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/pe-icons.css" rel="stylesheet">
+    <link href="css/prettyPhoto.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script src="js/jquery.js"></script>
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->       
+    <link rel="shortcut icon" href="images/ico/favicon.ico">
+
+    <script type="text/javascript">
+    jQuery(document).ready(function($){
+	'use strict';
+      	jQuery('body').backstretch([
+	        "images/Background.jpg",
+	        "images/Background2.png",
+	        "images/background3.png"
+	    ], {duration: 5000, fade: 500, centeredY: true });
+
+		$("#mapwrapper").gMap({ controls: false,
+         	scrollwheel: false,
+         	markers: [{ 	
+              	latitude:40.7566,
+				longitude: -73.9863,
+          	icon: { image: "images/marker.png",
+              	iconsize: [44,44],
+          		iconanchor: [12,46],
+          		infowindowanchor: [12, 0] } }],
+          	icon: { 
+              	image: "images/marker.png", 
+             	iconsize: [26, 46],
+              	iconanchor: [12, 46],
+              	infowindowanchor: [12, 0] },
+         	latitude:40.7566,
+         	longitude: -73.9863,
+          	zoom: 14 });
+    });
+    </script>
+</head><!--/head-->
+<body>
+<div id="preloader"></div>
+    <header class="navbar navbar-inverse navbar-fixed-top " role="banner">
+		<div id="nav-placeholder" class="collapse navbar-collapse">
+			<script>
+			$(function(){
+			$("#nav-placeholder").load("nav.html");
+			});
+			</script>
+			</div>
+    </header><!--/header-->
+
+    <section id="main-slider" class="no-margin">
+        <div class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="item active">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="carousel-content center centered">
+                                	<span class="home-icon pe-7s-gleam bounce-in"></span>
+                                    <h2 class="boxed animation animated-item-1 fade-down"> Archived Tutorials</h2>
+                                    <p class="boxed animation animated-item-2 fade-up">These are a bunch of tutorials or format explanations that i want to make sure have a place on the internet. ( i had a bad time when the first NeheProductions site went down and now i do this to console myself.</p>
+                                    <br>
+                            </div>
+                        </div>
+                    </div>
+                </div><!--/.item-->
+            </div><!--/.carousel-inner-->
+        </div><!--/.carousel-->
+    </section><!--/#main-slider-->
+
+    <div id="content-wrapper">
+        <section id="services" class="white">
+            <div class="container">
+            <div class="gap"></div> 
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="center gap fade-down section-heading">
+                            <h2 class="main-title"> The Sites</h2>
+							<p>Not all links in sites work as i couldnt downlowd and host litraly all of the site data :/</p>
+                            <hr>
+                        </div>                
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="service-block">
+                            <div class="pull-left bounce-in">
+                            </div>
+                            <div class="media-body fade-up">
+                                <h3 class="media-heading"><a href="ArchivedTutorials\Whats In a PNG\www.libpng.org\pub\png\spec\1.2\PNG-Contents.html">Whats in a png</a></h3>
+                                <p>Goes indepth about the png standard. i used it while i was making a PNG Decoder and really liked how indepth it was.</p>
+                            </div>
+                        </div>
+                    </div><!--/.col-md-4-->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="service-block">
+                            <div class="pull-left bounce-in">
+                            </div>
+                            <div class="media-body fade-up">
+                                <h3 class="media-heading"><a href="ArchivedTutorials\WhatsInAGIF\index.html">Whats in a GIF</a></h3>
+                                <p>Goes indepth on the GIF Standard. alot less indepth than the whats in a png but it has nice graphics to help with making a decoder and a more friendly explanation.</p>
+                            </div>
+                        </div>
+                    </div><!--/.col-md-4-->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="service-block">
+                            <div class="pull-left bounce-in">
+                            </div>
+                            <div class="media-body fade-up">
+                                <h3 class="media-heading"><a href="ArchivedTutorials/Nehe/nehe.gamedev.net/index.html">NeheProductionsOpenGLTutorials</a></h3>
+                                <p>Some Open GL Tutorials that were super helpfull for learning old Open GL. has a small problem with early lessons missing some includes but other than that worked flawlessly.</p>
+                            </div>
+                        </div>
+                    </div><!--/.col-md-4-->
+                </div><!--/.row-->
+                <div class="gap"></div>
+        </section>
+        </section><!--/#bottom-->
+
+        <footer id="footer" class="">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        Go to top of the page
+                    </div>
+                    <div class="col-sm-6">
+                        <ul class="pull-right">
+                            <li><a id="gototop" class="gototop" href="#"><i class="fa fa-chevron-up"></i></a></li><!--#gototop-->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer><!--/#footer-->
+    </div>
+
+
+    <script src="js/plugins.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.prettyPhoto.js"></script>   
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWDPCiH080dNCTYC-uprmLOn2mt2BMSUk&amp;sensor=true"></script> 
+    <script src="js/init.js"></script>
+</body>
+</html>

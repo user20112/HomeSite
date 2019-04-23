@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>CubeWorld</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/pe-icons.css" rel="stylesheet">
+    <link href="css/prettyPhoto.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->       
+    <script src="js/jquery.js"></script>
+    <link rel="shortcut icon" href="images/ico/favicon.ico">
+
+    <script type="text/javascript">
+    jQuery(document).ready(function($){
+    'use strict';
+        jQuery('body').backstretch([
+            "images/Background.jpg",
+            "images/Background.jpg",
+            "images/Background.jpg"
+        ], {duration: 5000, fade: 500});
+
+        $("#mapwrapper").gMap({ controls: false,
+            scrollwheel: false,
+            markers: [{     
+                latitude:40.7566,
+                longitude: -73.9863,
+            icon: { image: "images/marker.png",
+                iconsize: [44,44],
+                iconanchor: [12,46],
+                infowindowanchor: [12, 0] } }],
+            icon: { 
+                image: "images/marker.png", 
+                iconsize: [26, 46],
+                iconanchor: [12, 46],
+                infowindowanchor: [12, 0] },
+            latitude:40.7566,
+            longitude: -73.9863,
+            zoom: 14 });
+    });
+    </script>
+</head><!--/head-->
+<body>
+<div id="preloader"></div>
+    <header class="navbar navbar-inverse navbar-fixed-top " role="banner">
+		<div id="nav-placeholder" class="collapse navbar-collapse">
+			<script>
+			$(function(){
+			$("#nav-placeholder").load("nav.html");
+			});
+			</script>
+			</div>
+    </header><!--/header-->
+
+    <section id="single-page-slider" class="no-margin">
+        <div class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="item active">
+                    <div class="container">
+                        <div class="col-md-4 center-block">
+                            <div class="col-md-12">
+                                <div class="center gap fade-down section-heading">
+                                    <h2 class="main-title">CubeWorld Info</h2>
+                                    <hr>
+                                    <p>All cube world info in one place</p>
+                                </div>
+                            </div>   
+                        </div>
+                    </div>
+                </div><!--/.item-->
+            </div><!--/.carousel-inner-->
+        </div><!--/.carousel-->
+    </section><!--/#main-slider-->
+
+    <div id="content-wrapper">
+        
+        <section id="contact" class="white">
+            <div class="container">
+                <div class="gap"></div> 
+				<div data-type="countup" data-id="71810" class="tickcounter" style="width: 100%; position: relative; padding-bottom: 25%">
+                        <a href="//www.tickcounter.com/countup/71810/time-since-last-cube-world-update" title="Time since last Cube World update">Time since last Cube World update</a>
+                        <a href="//www.tickcounter.com/countup" title="Countup">Countup</a>
+                </div>
+                <script>(function (d, s, id) { var js, pjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//www.tickcounter.com/static/js/loader.js"; pjs.parentNode.insertBefore(js, pjs); }(document, "script", "tickcounter-sdk"));</script>
+				<div class="col-md-4 center-block">
+                    <div class="col-md-4 fade-up">
+                     <h2>
+                        <b>Wollay's Twitter</b>
+                    </h2>
+                    <br>
+                    <button class="btn btn-dark" data-toggle="collapse" data-target="#wollay_twitter">Expand / Collapse</button>
+                    <br>
+                    <div id="wollay_twitter" class="collapsing">
+                        <a class="twitter-timeline" data-height="670" href="https://twitter.com/wol_lay?ref_src=twsrc%5Etfw"></a>
+                        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    </div>
+					</div><!-- col -->
+                </div><!-- row --> 
+				<div class="col-md-4 center-block">
+                    <div class="col-md-4 fade-up">
+                     <h2>
+                        <b>Pixxie's Twitter</b>
+                    </h2>
+                    <br>
+                    <button class="btn btn-dark" data-toggle="collapse" data-target="#pixxie_twitter">Expand / Collapse</button>
+                    <br>
+                    <div id="pixxie_twitter" class="collapsing">
+                        <a class="twitter-timeline" data-height="670" href="https://twitter.com/pix_xie?ref_src=twsrc%5Etfw"></a>
+                        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    </div>
+					</div><!-- col -->
+                </div><!-- row --> 
+				<div class="col-md-4 center-block">
+                    <div class="col-md-4 fade-up">
+                     <h2>
+                        <b>Wollay's Instagram</b>
+                    </h2>
+                    <br>
+                    <button class="btn btn-dark" data-toggle="collapse" data-target="#wollay_instagram">Expand / Collapse</button>
+                    <br>
+                    <div id="wollay_instagram" class="collapsing">
+                        <br>
+                        <a href="https://www.instagram.com/wollayfx"> wollayfx Instagram </a>
+                        <br>
+                        <br>
+                        <div class="no_click">
+                            <a href="https://instawidget.net/v/user/wollayfx" id="link-91f3fa9691b4d84aded9153b07d00784e13ee83bce3bd36472179ef46ed82bb2">@wollayfx</a>
+                            <script src="https://instawidget.net/js/instawidget.js?u=91f3fa9691b4d84aded9153b07d00784e13ee83bce3bd36472179ef46ed82bb2&width=500px"></script>
+                        </div>
+                    </div>
+					</div><!-- col -->
+                </div><!-- row --> 
+                <div class="gap"></div>         
+				<div class="col-md-4 center-block">
+                    <div class="col-md-4 fade-up">
+                     <h2>
+                        <b>Cube World Facebook Page</b>
+                    </h2>
+                    <br>
+                    <button class="btn btn-dark" data-toggle="collapse" data-target="#cubeworld_facebook">Expand / Collapse</button>
+                    <br>
+                    <br>
+                    <div id="cubeworld_facebook" class="collapsing">
+                        <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FCube-World-217630671603658&tabs=timeline&width=500&height=850&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId"
+                            width="500" height="850" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"
+                            allow="encrypted-media"></iframe>
+                    </div>
+					</div><!-- col -->
+                </div><!-- row --> 
+                <div class="gap"></div>   
+				<div class="col-md-4 center-block">
+                    <div class="col-md-4 fade-up">
+                     <h2>
+                        <b>Picroma Facebook Page</b>
+                    </h2>
+                    <br>
+                    <button class="btn btn-dark" data-toggle="collapse" data-target="#picroma_facebook">Expand / Collapse</button>
+                    <br>
+                    <br>
+                    <div id="picroma_facebook" class="collapsing">
+                        <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FPicroma-216083171742709&tabs=timeline&width=500&height=850&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId"
+                            width="500" height="850" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"
+                            allow="encrypted-media"></iframe>
+                    </div>
+					</div><!-- col -->
+                </div><!-- row --> 
+				<div class="gap"></div>   
+				<div class="col-md-4 center-block">
+                    <div class="col-md-4 fade-up">
+                     <h2>
+                        <b>Confirmed features of the next update</b>
+                    </h2>
+                    <br>
+                    <button class="btn btn-dark" data-toggle="collapse" data-target="#features">Expand / Collapse</button>
+                    <br>
+
+                    <div id="features" class="collapsing">
+                        <blockquote class="reddit-card" data-card-created="1533845190">
+                            <a href="https://www.reddit.com/r/CubeWorld/comments/4erfp0/a_list_with_all_known_features_of_the_next_update/">a list with all known features of the next update</a> from
+                            <a href="http://www.reddit.com/r/CubeWorld">r/CubeWorld</a>
+                        </blockquote>
+                        <script async src="https://embed.redditmedia.com/widgets/platform.js" charset="UTF-8"></script>
+                    </div>
+					</div><!-- col -->
+                </div><!-- row --> 
+				<div class="gap"></div>   
+				<div class="col-md-4 center-block">
+                    <div class="col-md-4 fade-up">
+                     
+					</div><!-- col -->
+                </div><!-- row --> 
+                <div class="gap"></div>   
+            </div>
+        </section>
+    </div>
+
+   <div id="footer-wrapper">
+        <section id="bottom" class="">
+            <div class="container">
+                <div class="col-md-4 center-block">
+                    <div >
+                        <h4>Not finding what you want?</h4>
+                        <p>Go to the Contact Info Page and send me a text or email with the suggestion you want</p>
+                    </div><!--/.col-md-3-->
+
+                </div>
+            </div>
+        </section><!--/#bottom-->
+
+        <footer id="footer" class="">
+            <div class="container">
+                <div class="col-md-4 center-block">
+                    <div class="col-sm-6">
+                        Go to top of the page
+                    </div>
+                    <div class="col-sm-6">
+                        <ul class="pull-right">
+                            <li><a id="gototop" class="gototop" href="#"><i class="fa fa-chevron-up"></i></a></li><!--#gototop-->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer><!--/#footer-->
+    </div>
+
+
+    <script src="js/plugins.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.prettyPhoto.js"></script>   
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWDPCiH080dNCTYC-uprmLOn2mt2BMSUk&amp;sensor=true"></script> 
+    <script src="js/init.js"></script>
+</body>
+</html>

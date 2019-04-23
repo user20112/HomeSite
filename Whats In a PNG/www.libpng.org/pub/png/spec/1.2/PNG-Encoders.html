@@ -1,0 +1,643 @@
+<!doctype html public "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<html lang="en">
+
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Encoders.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+<head>
+
+<TITLE>PNG Specification: Recommendations for Encoders</TITLE>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+
+
+
+
+
+
+
+
+<h1>PNG (Portable Network Graphics) Specification, Version 1.2</h1>
+
+
+
+<hr>
+<a href="PNG-Misc.html">Previous page</a>
+<br>
+<a href="PNG-Decoders.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+<h2><a name="Encoders">9. Recommendations for Encoders</a></h2>
+
+
+<p>This chapter gives some recommendations for encoder behavior.
+The only absolute requirement on a PNG encoder is that it produce
+files that conform to the format specified in the preceding chapters.
+However, best results will usually be achieved by following these
+recommendations.
+
+<h3><a name="E.Sample-depth-scaling">9.1. Sample depth scaling</a></h3>
+
+<p>When encoding input samples that have a sample depth that cannot be
+directly represented in PNG, the encoder must scale the samples up to a
+sample depth that is allowed by PNG.  The most accurate scaling method
+is the linear equation
+
+<pre>
+   output = ROUND(input * MAXOUTSAMPLE / MAXINSAMPLE)
+</pre>
+
+<p>where the input samples range from <code class=expr>0</code> to <code class=expr>MAXINSAMPLE</code>
+and the outputs
+range from <code class=expr>0</code> to <code class=expr>MAXOUTSAMPLE</code>
+(which is <code class=expr><lp>2<sup>sampledepth</sup><rp>-1)</code>.
+
+<p>A close approximation to the linear scaling method can be achieved by
+"left bit replication", which is shifting the valid bits to
+begin in the
+most significant bit and repeating the most significant bits into the
+open bits.  This method is often faster to compute than linear scaling.
+As an example, assume that 5-bit samples are being scaled up to 8 bits.
+If the source sample value is 27 (in the range from 0-31), then the
+original bits are:
+
+<pre>
+   4 3 2 1 0
+   ---------
+   1 1 0 1 1
+</pre>
+
+<p>Left bit replication gives a value of 222:
+
+<pre>
+   7 6 5 4 3  2 1 0
+   ----------------
+   1 1 0 1 1  1 1 0
+   |=======|  |===|
+       |      Leftmost Bits Repeated to Fill Open Bits
+       |
+   Original Bits
+</pre>
+
+<p>which matches the value computed by the linear equation.  Left bit
+replication usually gives the same value as linear scaling and is never
+off by more than one.
+
+
+<p>A distinctly less accurate approximation is obtained by simply
+left-shifting the input value and filling the low order bits with
+zeroes.  This scheme cannot reproduce white exactly, since it does not
+generate an all-ones maximum value; the net effect is to darken the
+image slightly.  This method is not recommended in general, but it does
+have the effect of improving compression, particularly when dealing
+with greater-than-eight-bit sample depths.  Since the relative error
+introduced by zero-fill scaling is small at high sample depths, some
+encoders may choose to use it.  Zero-fill must <strong>not</strong>
+be used for alpha channel data, however, since many decoders will
+special-case alpha values of all zeroes and all ones.  It is important
+to represent both those values exactly in the scaled data.
+
+<p>When the encoder writes an <span class=cn>sBIT</span> chunk, it is required to
+do the scaling in such a way that the high-order bits of the stored
+samples match the original data.  That is, if the <span class=cn>sBIT</span> chunk
+specifies a sample depth of <code class=expr>S</code>, the high-order
+<code class=expr>S</code> bits of
+the stored data must agree with the original <code class=expr>S</code>-bit
+data values.  This allows decoders to
+recover the original data by shifting right.  The added low-order bits
+are not constrained.  Note that all the above scaling methods meet this
+restriction.
+
+<p>When scaling up source data, it is recommended that the low-order
+bits be filled consistently for all samples; that is, the same source
+value should generate the same sample value at any pixel position.  This
+improves compression by reducing the number of distinct sample values.
+However, this is not a requirement, and some encoders may choose not to
+follow it.  For example, an encoder might instead dither the low-order
+bits, improving displayed image quality at the price of increasing file
+size.
+
+<p>In some applications the original source data may have a range that
+is not a power of 2.  The linear scaling equation still works for this
+case, although the shifting methods do not.  It is recommended that an
+<span class=cn>sBIT</span> chunk not be written for such images, since <span class=cn>sBIT</span>
+suggests that the original data range was
+exactly <code class=expr>0..<lp>2<sup>S</sup><rp>-1</code>.
+
+<h3><a name="E.Encoder-gamma-handling">9.2. Encoder gamma handling</a></h3>
+
+<p>See <a href="PNG-GammaAppendix.html">Gamma Tutorial</a> 
+if you aren't already
+familiar with gamma issues.
+
+<p>Encoders capable of full-fledged color management <span class=ref>[<a href="PNG-References.html#B.ICC">ICC</a>]</span> 
+will perform more sophisticated
+calculations than those described here, and they may choose to
+use the <span class=cn>iCCP</span> chunk.  Encoders that know that their image
+samples conform to the sRGB specification <span class=ref>[<a href="PNG-References.html#B.sRGB" >sRGB</a>]</span> 
+should use the <span class=cn>sRGB</span> chunk and not perform
+gamma handling.  Otherwise, this section applies.
+
+<p>The encoder has two gamma-related decisions to make.  First, it must
+decide how to transform whatever image samples it has into the image
+samples that will go into the PNG file.  Second, it must decide what
+value to write into the <span class=cn>gAMA</span> chunk.
+
+<p>The rule for the second decision is simply to write whatever
+value will cause a decoder to do what you want.  See Recommendations
+for Decoders: <a href="PNG-Decoders.html#D.Decoder-gamma-handling">Decoder gamma handling</a>.
+
+<p>The first decision depends on the nature of the image samples
+and their precision.  If the samples represent light intensity in
+floating-point or high-precision integer form (perhaps from a computer
+image renderer), then the encoder may perform "gamma encoding"
+(applying a power function with exponent less than 1) before quantizing the data
+to integer values for output to the file.  This results in fewer banding
+artifacts at a given sample depth, or allows smaller samples while
+retaining the same visual quality.  An intensity level expressed as a
+floating-point value in the range 0 to 1 can be converted to a file
+image sample by
+
+<pre>
+   <code class=expr>sample = intensity ^ encoding_exponent</code>
+   <code class=expr>integer_sample = ROUND(sample * (2^bitdepth - 1))</code>
+</pre>
+
+<p>If the intensity in the equation is the desired display output
+intensity, then the encoding exponent is the gamma value to be written to
+the file, by the definition of <span class=cn>gAMA</span> (See <a href="PNG-Chunks.html#C.gAMA" >the <span class=cn>gAMA</span> chunk specification</a>).  
+But if the intensity
+available to the encoder is the original scene intensity, another
+transformation may be needed.  Sometimes the displayed image should have
+higher contrast than the original image; in other words, the end-to-end
+transfer function from original scene to display output should have an
+exponent greater than 1.  In this case,
+
+<pre>
+   gamma = encoding_exponent / end_to_end_exponent
+</pre>
+
+<p>If you don't know whether the conditions under which the original
+image was captured (or calculated) warrant such a contrast change, you
+may assume that display intensities are proportional to original scene
+intensities; in other words, the end-to-end exponent is 1, so gamma and
+the encoding exponent are equal.
+
+<p>If the image is being written to a file only, the encoder is free to
+choose the encoding exponent.  Choosing a value that causes the gamma
+value in the <span class=cn>gAMA</span> chunk to be <span class=expr>1/2.2</span> is often a reasonable
+choice because it minimizes the work for a decoder displaying on a
+typical video monitor.
+
+<p>Some image renderers may simultaneously write the image to a PNG file
+and display it on-screen.  The displayed pixels should be appropriate
+for the display system, so that the user sees a proper representation of
+the intended scene.
+
+<p>If the renderer wants to write the displayed sample values to the PNG
+file, avoiding a separate gamma encoding step for file output, then the
+renderer should approximate the transfer function of the display system
+by a power function, and write the reciprocal of the exponent into the
+<span class=cn>gAMA</span> chunk.  This will allow a PNG decoder to reproduce what
+the file's originator saw on screen during rendering.
+
+<p>However, it is equally reasonable for a renderer to compute displayed
+pixels appropriate for the display device, and to perform separate
+gamma encoding for file storage, arranging to have a value in the
+<span class=cn>gAMA</span> chunk more appropriate to the future use of the image.
+
+<p>Computer graphics renderers often do not perform gamma encoding,
+instead making sample values directly proportional to scene light
+intensity.  If the PNG encoder receives intensity samples that have
+already been quantized into integers, there is no point in doing gamma
+encoding on them; that would just result in further loss of information.
+The encoder should just write the sample values to the PNG file.  This
+does not imply that the <span class=cn>gAMA</span> chunk should contain a gamma
+value of 1.0, because the desired end-to-end transfer function from
+scene intensity to display output intensity is not necessarily linear.
+The desired gamma value is probably not far from 1.0, however.  It may
+depend on whether the scene being rendered is a daylight scene or an
+indoor scene, etc.
+
+<p>When the sample values come directly from a piece of hardware, the
+correct gamma value can in principle be inferred from the transfer
+function of the hardware and the lighting conditions of the scene.
+In the case of video digitizers ("frame grabbers"), the samples
+are probably in the sRGB color space, because the sRGB specification was
+designed to be compatible with video standards.  Image scanners are less
+predictable.  Their output samples may be proportional to the input
+light intensity because CCD (charge coupled device) sensors themselves
+are linear, or the scanner hardware may have already applied a power
+function designed to compensate for dot gain in subsequent printing (an
+exponent of about 0.57), or the scanner may have corrected the samples
+for display on a monitor.  The device documentation might describe
+the transformation performed, or might describe the target display or
+printer for the image data (which might be configurable).  You can also
+scan a calibrated target and use calibration software to determine the
+behavior of the device.  Remember that gamma relates file samples to
+desired display output, not to scanner input.
+
+<p>File format converters generally should not attempt to convert
+supplied images to a different gamma.  Store the data in the PNG file
+without conversion, and deduce the gamma value from information in the
+source file if possible.
+Gamma alteration at file conversion time causes re-quantization of
+the set of intensity levels that are represented, introducing further
+roundoff error with little benefit.  It's almost always better to just
+copy the sample values intact from the input to the output file.
+
+<p>If the source file format describes the gamma characteristic of the
+image, a file format converter is strongly encouraged to write a PNG
+<span class=cn>gAMA</span> chunk.  Note that some file formats specify the exponent
+of the function mapping file samples to display output rather than the
+other direction.  If the source file's gamma value is greater than
+1.0, it is probably a display system exponent, and you should use its
+reciprocal for the PNG gamma.  If the source file format records the
+relationship between image samples and something other than display
+output, then deducing the PNG gamma value will be more complex.
+
+
+<p>Regardless of how an image was originally created, if an encoder
+or file format converter knows that the image has been displayed
+satisfactorily using a display system whose transfer function can be
+approximated by a power function with exponent <code class=expr>display_exponent</code>,
+then the image can be marked as having the gamma value:
+
+<pre>
+   gamma = 1 / display_exponent
+</pre>
+
+<p>It's better to write a <span class=cn>gAMA</span> chunk with an approximately
+right value than to omit the chunk and force PNG decoders to guess at an
+appropriate gamma.
+
+<p>On the other hand, if the encoder has no way to infer the gamma
+value, then it is better to omit the <span class=cn>gAMA</span> chunk entirely.  If
+the image gamma has to be guessed at, leave it to the decoder to do the
+guessing.
+
+<p>Gamma does not apply to alpha samples; alpha is always represented
+linearly.
+
+<p>See also Recommendations for Decoders: <a href="PNG-Decoders.html#D.Decoder-gamma-handling">Decoder gamma handling</a>.
+
+<h3><a name="E.Encoder-color-handling">9.3. Encoder color handling</a></h3>
+
+<p>See <a href="PNG-ColorAppendix.html">Color Tutorial</a> 
+if you aren't already
+familiar with color issues.
+
+<p>Encoders capable of full-fledged color management <span class=ref>[<a href="PNG-References.html#B.ICC">ICC</a>]</span> 
+will perform more sophisticated
+calculations than those described here, and they may choose to
+use the <span class=cn>iCCP</span> chunk.  Encoders that know that their image
+samples conform to the sRGB specification <span class=ref>[<a href="PNG-References.html#B.sRGB" >sRGB</a>]</span> 
+are strongly encouraged to use the <span class=cn>sRGB</span> chunk.
+Otherwise, this section applies.
+
+<p>If it is possible for the encoder to determine the chromaticities of
+the source display primaries, or to make a strong guess based on the
+origin of the image or the hardware running it, then the encoder is
+strongly encouraged to output the <span class=cn>cHRM</span> chunk.  If it does so,
+the <span class=cn>gAMA</span> chunk should also be written; decoders can do little
+with <span class=cn>cHRM</span> if <span class=cn>gAMA</span> is missing.
+
+
+<p>Video created with recent video equipment probably uses the
+CCIR 709 primaries and D65 white point <span class=ref>[<a href="PNG-References.html#B.ITU-R-BT709" >ITU-R-BT709</a>]</span>, 
+which are:
+
+<pre>
+            R           G           B         White
+   x      0.640       0.300       0.150       0.3127
+   y      0.330       0.600       0.060       0.3290
+</pre>
+
+<p>An older but still very popular video standard is SMPTE-C <span class=ref>[<a href="PNG-References.html#B.SMPTE-170M">SMPTE-170M</a>]</span>:
+
+<pre>
+            R           G           B         White
+   x      0.630       0.310       0.155       0.3127
+   y      0.340       0.595       0.070       0.3290
+</pre>
+
+<p>The original NTSC color primaries have not been used in decades.
+Although you may still find the NTSC numbers listed in standards
+documents, you won't find any images that actually use them.
+
+<p>Scanners that produce PNG files as output should insert the filter
+chromaticities into a <span class=cn>cHRM</span> chunk.
+
+<p>In the case of hand-drawn or digitally edited images, you have to
+determine what monitor they were viewed on when being produced.  Many
+image editing programs allow you to specify what type of monitor
+you are using.  This is often because they are working in some
+device-independent space internally.  Such programs have enough
+information to write valid <span class=cn>cHRM</span> and <span class=cn>gAMA</span> chunks, and
+should do so automatically.
+
+<p>If the encoder is compiled as a portion of a computer image renderer
+that performs full-spectral rendering, the monitor values that were
+used to convert from the internal device-independent color space to
+RGB should be written into the <span class=cn>cHRM</span> chunk.  Any colors that
+are outside the gamut of the chosen RGB device should be clipped or
+otherwise constrained to be within the gamut; PNG does not store
+out-of-gamut colors.
+
+<p>If the computer image renderer performs calculations directly in
+device-dependent RGB space, a <span class=cn>cHRM</span> chunk should not be written
+unless the scene description and rendering parameters have been adjusted
+to look good on a particular monitor.  In that case, the data for that
+monitor (if known) should be used to construct a <span class=cn>cHRM</span> chunk.
+
+
+<p>There are often cases where an image's exact origins are unknown,
+particularly if it began life in some other format.  A few image
+formats store calibration information, which can be used to fill in
+the <span class=cn>cHRM</span> chunk.  For example, all PhotoCD images use the CCIR
+709 primaries and D65 white point, so these values can be written into
+the <span class=cn>cHRM</span> chunk when converting a PhotoCD file.  PhotoCD also
+uses the SMPTE-170M transfer function.  (PhotoCD can store colors
+outside the RGB gamut, so the image data will require gamut mapping
+before writing to PNG format.)  TIFF 6.0 files can optionally store
+calibration information, which if present should be used to construct
+the <span class=cn>cHRM</span> chunk.  GIF and most other formats do not store any
+calibration information.
+
+<p>It is <strong>not</strong> recommended that file format converters
+attempt to convert supplied images to a different RGB color space.
+Store the data in the PNG file without conversion, and record the source
+primary chromaticities if they are known.  Color space transformation
+at file conversion time is a bad idea because of gamut mismatches and
+rounding errors.  As with gamma conversions, it's better to store the
+data losslessly and incur at most one conversion when the image is
+finally displayed.
+
+<p>See also Recommendations for Decoders: <a href="PNG-Decoders.html#D.Decoder-color-handling">Decoder color handling</a>.
+
+<h3><a name="E.Alpha-channel-creation">9.4. Alpha channel creation</a></h3>
+
+<p>The alpha channel can be regarded either as a mask that temporarily
+hides transparent parts of the image, or as a means for constructing a
+non-rectangular image.  In the first case, the color values of fully
+transparent pixels should be preserved for future use.  In the second
+case, the transparent pixels carry no useful data and are simply there
+to fill out the rectangular image area required by PNG.  In this case,
+fully transparent pixels should all be assigned the same color value for
+best compression.
+
+<p>Image authors should keep in mind the possibility that a decoder will
+ignore transparency control.  Hence, the colors assigned to transparent
+pixels should be reasonable background colors whenever feasible.
+
+<p>For applications that do not require a full alpha channel, or
+cannot afford the price in compression efficiency, the <span class=cn>tRNS</span>
+transparency chunk is also available.
+
+
+<p>If the image has a known background color, this color should
+be written in the <span class=cn>bKGD</span> chunk.  Even decoders that ignore
+transparency may use the <span class=cn>bKGD</span> color to fill unused screen area.
+
+<p>If the original image has premultiplied (also
+called "associated")
+alpha data, convert it to PNG's non-premultiplied format by dividing
+each sample value by the corresponding alpha value, then multiplying by
+the maximum value for the image bit depth, and rounding to the nearest
+integer.  In valid premultiplied data, the sample values never exceed
+their corresponding alpha values, so the result of the division should
+always be in the range 0 to 1.  If the alpha value is zero, output black
+(zeroes).
+
+<h3><a name="E.Suggested-palettes">9.5. Suggested palettes</a></h3>
+
+<p>Suggested palettes can appear as <span class=cn>sPLT</span> chunks in any PNG
+file, or as a <span class=cn>PLTE</span> chunk in truecolor PNG files.  In either
+case, the suggested palette is not an essential part of the image
+data, but it may be used to present the image on indexed-color display
+hardware.  Suggested palettes are of no interest to viewers running on
+truecolor hardware.
+
+<p>When <span class=cn>sPLT</span> is used to provide a suggested palette, it is
+recommended that the encoder use the frequency fields to indicate the
+relative importance of the palette entries, rather than leave them
+all zero (meaning undefined).  The frequency values are most easily
+computed as "nearest neighbor" counts, that is,
+the approximate usage
+of each RGBA palette entry if no dithering is applied.  (These counts
+will often be available for free as a consequence of developing the
+suggested palette.)  Because the suggested palette includes transparency
+information, it should be computed for the uncomposited image.
+
+<p>Even for indexed-color images, <span class=cn>sPLT</span> can be used to define
+alternative reduced palettes for viewers that are unable to display all
+the colors present in the <span class=cn>PLTE</span> chunk.
+
+<p>An older method for including a suggested palette in a truecolor
+PNG file uses the <span class=cn>PLTE</span> chunk.  If this method is used, the
+histogram (frequencies) should appear in a separate <span class=cn>hIST</span> chunk.
+Also, <span class=cn>PLTE</span> does not include transparency information, so for
+images of color type 6 (truecolor with alpha channel), it is recommended
+that a <span class=cn>bKGD</span> chunk appear and that the palette and histogram
+be computed with reference to the image as it would appear after
+compositing against the specified background color.  This definition
+is necessary to ensure that useful palette entries are generated for
+pixels having fractional alpha values.  The resulting palette will
+probably be useful only to viewers that present the image against the
+same background color.  It is recommended that PNG editors delete or
+recompute the palette if they alter or remove the <span class=cn>bKGD</span> chunk in
+an image of color type 6.
+
+<p>For images of color type 2 (truecolor without alpha channel),
+it is recommended that <span class=cn>PLTE</span> and <span class=cn>hIST</span> be computed
+with reference to the RGB data only, ignoring any transparent-color
+specification.  If the file uses transparency (has a <span class=cn>tRNS</span>
+chunk), viewers can easily adapt the resulting palette for use with
+their intended background color.  They need only replace the palette
+entry closest to the <span class=cn>tRNS</span> color with their background color
+(which may or may not match the file's <span class=cn>bKGD</span> color, if any).
+
+<p>If <span class=cn>PLTE</span> appears without <span class=cn>bKGD</span> in an image of color
+type 6, the circumstances under which the palette was computed are
+unspecified.
+
+<p>For providing suggested palettes, <span class=cn>sPLT</span> is more flexible than
+<span class=cn>PLTE</span> in the following ways:
+
+<ul>
+
+<li>With <span class=cn>sPLT</span>, there can be multiple suggested palettes.  A
+decoder may choose an appropriate palette based on name or number of
+entries.
+
+<p>
+
+<li>In an RGBA (color type 6) PNG, <span class=cn>PLTE</span> represents a palette
+already composited against the <span class=cn>bKGD</span> color, so it is useful only
+for display against that background color.  The <span class=cn>sPLT</span> chunk
+provides an uncomposited palette, which is useful for display against
+backgrounds of the decoder's choice.
+
+<p>
+
+<li>Since <span class=cn>sPLT</span> is a noncritical chunk, a PNG editor can add
+or modify suggested palettes without being forced to discard unknown
+unsafe-to-copy chunks.
+
+<p>
+
+<li>Whereas <span class=cn>sPLT</span> is allowed in PNG files of color types 0, 3,
+and 4 (grayscale and indexed), <span class=cn>PLTE</span> cannot be used to provide
+reduced palettes in these cases.
+
+<p>
+
+<li>More than 256 entries can appear in <span class=cn>sPLT</span>.
+
+<p>
+
+</ul>
+
+<p>An encoder that uses <span class=cn>sPLT</span> may choose to write a
+<span class=cn>PLTE</span>/<span class=cn>hIST</span> suggested palette as well, for backward
+compatibility with decoders that do not recognize <span class=cn>sPLT</span>.
+
+<h3><a name="E.Filter-selection">9.6. Filter selection</a></h3>
+
+<p>For images of color type 3 (indexed color), filter type 0 (None) is
+usually the most effective.  Note that color images with 256 or fewer
+colors should almost always be stored in indexed color format; truecolor
+format is likely to be much larger.
+
+<p>Filter type 0 is also recommended for images of bit depths less than
+8.  For low-bit-depth grayscale images, it may be a net win to expand
+the image to 8-bit representation and apply filtering, but this is rare.
+
+<p>For truecolor and grayscale images, any of the five filters may prove
+the most effective.  If an encoder uses a fixed filter, the Paeth filter
+is most likely to be the best.
+
+<p>For best compression of truecolor and grayscale images, we recommend
+an adaptive filtering approach in which a filter is chosen for each
+scanline.  The following simple heuristic has performed well in early
+tests: compute the output scanline using all five filters, and select
+the filter that gives the smallest sum of absolute values of outputs.
+(Consider the output bytes as signed differences for this test.)  This
+method usually outperforms any single fixed filter choice.  However, it
+is likely that much better heuristics will be found as more experience
+is gained with PNG.
+
+<p>Filtering according to these recommendations is effective on
+interlaced as well as noninterlaced images.
+
+<h3><a name="E.Text-chunk-processing">9.7. Text chunk processing</a></h3>
+
+<p>A nonempty keyword <em>must</em> be provided for each <span class=cn>text</span> chunk
+(<span class=cn>iTXt</span>, <span class=cn>tEXt</span>, or <span class=cn>zTXt</span>).
+The generic keyword "Comment" can be used if no better
+description of
+the text is available.  If a user-supplied keyword is used, be sure to
+check that it meets the restrictions on keywords.
+
+<p>Text stored in <span class=cn>tEXt</span> or <span class=cn>zTXt</span> chunks is expected
+to use the Latin-1 character set.
+Encoders should provide character code remapping if the local
+system's character set is not Latin-1.
+Encoders wishing to store characters not defined in Latin-1 should use
+the <span class=cn>iTXt</span> chunk.
+
+<p>Encoders should discourage the creation of single lines of text
+longer than 79 characters, in order to facilitate easy reading.
+
+<p>It is recommended that text items less than 1K (1024 bytes) in size
+should be output using uncompressed <span class=cn>text</span> chunks.  In particular,
+it is recommended that the text associated with basic title and author
+keywords should always be output with uncompressed chunks.  Lengthy
+disclaimers, on the other hand, are ideal candidates for compression.
+
+<p>Placing large <span class=cn>text</span> chunks after the
+image data (after <span class=cn>IDAT</span>) can speed up image display in some
+situations, since the decoder won't have to read over the text to get to
+the image data.  But it is recommended that small <span class=cn>text</span> chunks,
+such as the image title, appear before <span class=cn>IDAT</span>.
+
+<h3><a name="E.Use-of-private-chunks">9.8. Use of private chunks</a></h3>
+
+<p>Applications can use PNG private chunks to carry information that
+need not be understood by other applications.  Such chunks must be given
+names with lowercase second letters, to ensure that they can never
+conflict with any future public chunk definition.  Note, however, that
+there is no guarantee that some other application will not use the same
+private chunk name.  If you use a private chunk type, it is prudent to
+store additional identifying information at the beginning of the chunk
+data.
+
+<p>Use an ancillary chunk type (lowercase first letter), not a critical
+chunk type, for all private chunks that store information that is not
+absolutely essential to view the image.  Creation of private critical
+chunks is discouraged because they render PNG files unportable.  Such
+chunks should not be used in publicly available software or files.
+If private critical chunks are essential for your application, it is
+recommended that one appear near the start of the file, so that a
+standard decoder need not read very far before discovering that it
+cannot handle the file.
+
+<p>If you want others outside your organization to understand a chunk
+type that you invent, contact the maintainers of the PNG specification
+to submit a proposed chunk name and definition for addition to the list
+of special-purpose public chunks (see <a href="PNG-Chunks.html#C.Additional-chunk-types" >Additional chunk types</a>).  
+Note that a proposed public chunk name
+(with uppercase second letter) must not be used in publicly available
+software or files until registration has been approved.
+
+<p>If an ancillary chunk contains textual information that might be
+of interest to a human user, you should <strong>not</strong> create a
+special chunk type for it.  Instead use a <span class=cn>text</span> chunk and define
+a suitable keyword.  That way, the information will be available to
+users not using your software.
+
+<p>Keywords in <span class=cn>text</span> chunks should be reasonably
+self-explanatory, since the idea is to let other users figure out what
+the chunk contains.  If of general usefulness, new keywords can be
+registered with the maintainers of the PNG specification.  But it is
+permissible to use keywords without registering them first.
+
+<h3><a name="E.Private-type-and-method-codes">9.9. Private type and method codes</a></h3>
+
+<p>This specification defines the meaning of only some of the possible
+values of some fields.  For example, only compression method 0 and
+filter types 0 through 4 are defined.  Numbers greater than 127 must be
+used when inventing experimental or private definitions of values for
+any of these fields.  Numbers below 128 are reserved for possible future
+public extensions of this specification.  Note that use of private type
+codes may render a file unreadable by standard decoders.  Such codes are
+strongly discouraged except for experimental purposes, and should not
+appear in publicly available software or files.
+
+<hr>
+<a href="PNG-Misc.html">Previous page</a>
+<br>
+<a href="PNG-Decoders.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+</BODY>
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Encoders.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+</HTML>

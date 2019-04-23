@@ -1,0 +1,652 @@
+<!doctype html public "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<html lang="en">
+
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Rationale.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+<head>
+
+<TITLE>PNG Specification: Rationale</TITLE>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+
+
+
+
+
+
+
+
+<h1>PNG (Portable Network Graphics) Specification, Version 1.2</h1>
+
+
+
+<hr>
+<a href="PNG-Glossary.html">Previous page</a>
+<br>
+<a href="PNG-GammaAppendix.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+<h2><a name="Rationale">12. Appendix: Rationale</a></h2>
+
+<p>(This appendix is not part of the formal PNG specification.)
+
+<p>This appendix gives the reasoning behind some of the design decisions
+in PNG.  Many of these decisions were the subject of considerable
+debate.  The authors freely admit that another group might have made
+different decisions; however, we believe that our choices are defensible
+and consistent.
+
+<h3><a name="R.Why-a-new-file-format">12.1. Why a new file format?</a></h3>
+
+<p>Does the world really need yet another graphics format?  We believe
+so.  GIF is no longer freely usable, but no other commonly used format
+can directly replace it, as is discussed in more detail below.  We might
+have used an adaptation of an existing format, for example GIF with an
+unpatented compression scheme.  But this would require new code anyway;
+it would not be all that much easier to implement than a whole new file
+format.  (PNG is designed to be simple to implement, with the exception
+of the compression engine, which would be needed in any case.)  We feel
+that this is an excellent opportunity to design a new format that fixes
+some of the known limitations of GIF.
+
+<h3><a name="R.Why-these-features">12.2. Why these features?</a></h3>
+
+<p>The features chosen for PNG are intended to address the needs of
+applications that previously used the special strengths of GIF.  In
+particular, GIF is well adapted for online communications because of
+its streamability and progressive display capability.  PNG shares those
+attributes.
+
+<p>We have also addressed some of the widely known shortcomings of GIF.
+In particular, PNG supports truecolor images.  We know of no widely used
+image format that losslessly compresses truecolor images as effectively
+as PNG does.  We hope that PNG will make use of truecolor images more
+practical and widespread.
+
+<p>Some form of transparency control is desirable for applications in
+which images are displayed against a background or together with other
+images.  GIF provided a simple transparent-color specification for this
+purpose.  PNG supports a full alpha channel as well as transparent-color
+specifications.  This allows both highly flexible transparency and
+compression efficiency.
+
+<p>Robustness against transmission errors has been an important
+consideration.  For example, images transferred across the Internet are
+often mistakenly processed as text, leading to file corruption.  PNG is
+designed so that such errors can be detected quickly and reliably.
+
+<p>PNG has been expressly designed not to be completely dependent on a
+single compression technique.  Although deflate/inflate compression is
+mentioned in this document, PNG would still exist without it.
+
+<h3><a name="R.Why-not-these-features">12.3. Why not these features?</a></h3>
+
+<p>Some features have been deliberately omitted from PNG.  These choices
+were made to simplify implementation of PNG, promote portability and
+interchangeability, and make the format as simple and foolproof as
+possible for users.  In particular:
+
+
+<ul>
+
+<li>There is no uncompressed variant of PNG.  It is possible to
+store uncompressed data by using only uncompressed deflate blocks
+(a feature normally used to guarantee that deflate does not make
+incompressible data much larger).  However, PNG software must support
+full deflate/inflate; any software that does not is not compliant with
+the PNG standard.  The two most important features of PNG--portability
+and compression--are absolute requirements for online applications,
+and users demand them.  Failure to support full deflate/inflate
+compromises both of these objectives.
+
+<p>
+
+<li>There is no lossy compression in PNG.  Existing formats such as JFIF
+(JPEG File Interchange Format) already handle lossy compression well.
+Furthermore, available lossy compression methods, e.g., the JPEG (Joint
+Photographic Experts Group) algorithm, are far from foolproof--a poor
+choice of quality level can ruin an image.  To avoid user confusion
+and unintentional loss of information, we feel it is best to keep
+lossy and lossless formats strictly separate.  Also, lossy compression
+is complex to implement.  Adding JPEG support to a PNG decoder might
+significantly increase its size, causing some decoders to omit support
+for the feature, which would erode our goal of interchangeability.
+
+<p>
+
+<li>There is no support for CMYK (Cyan, Magenta, Yellow, blacK) or
+other unusual color spaces.  Again, this is in the name of promoting
+portability.  CMYK, in particular, is far too device-dependent to be
+useful as a portable image representation.
+
+<p>
+
+<li>There is no standard chunk for thumbnail views of images.  In
+discussions with software vendors who use thumbnails in their products,
+it has become clear that most would not use a "standard" thumbnail
+chunk.  For one thing, every vendor has a different idea of what the
+dimensions and characteristics of a thumbnail ought to be.  Also,
+some vendors keep thumbnails in separate files to accommodate varied
+image formats; they are not going to stop doing that simply because of
+a thumbnail chunk in one new format.  Proprietary chunks containing
+vendor-specific thumbnails appear to be more practical than a common
+thumbnail format.
+
+<p>
+
+</ul>
+
+<p>It is worth noting that private extensions to PNG could easily add
+these features.  We will not, however, include them as part of the basic
+PNG standard.
+
+
+<p>PNG also does not support multiple images in one file.  This
+restriction is a reflection of the reality that many applications
+do not need and will not support multiple images per file.  In
+any case, single images are a fundamentally different sort of
+object from sequences of images.  Rather than make false promises
+of interchangeability, we have drawn a clear distinction between
+single-image and multi-image formats.  PNG is a single-image format.
+(But see <a href="PNG-Misc.html#Multiple-image-extension">Multiple-image extension</a>.)
+
+<h3><a name="R.Why-not-use-format-X">12.4. Why not use format X?</a></h3>
+
+<p>We considered numerous existing formats before deciding to develop
+PNG.  None could meet the requirements that we felt were important for PNG.
+
+<p>GIF is no longer suitable as a universal standard because of legal
+entanglements.  Although just replacing GIF's compression method would
+avoid that problem, GIF does not support truecolor images, alpha
+channels, or gamma correction.  The spec has more subtle problems too.
+Only a small subset of the GIF89 spec is actually portable across a
+variety of implementations, but there is no codification of the most
+portable part of the spec.
+
+<p>TIFF (the Tagged Image File Format) is far too complex to meet our
+goals of simplicity and interchangeability.  Defining a TIFF subset
+would meet that objection, but would frustrate users making the
+reasonable assumption that a file saved as TIFF from their existing
+software would load into a program supporting our flavor of TIFF.
+Furthermore, TIFF is not designed for stream processing, has no
+provision for progressive display, and does not currently provide any
+good, legally unencumbered, lossless compression method.
+
+<p>IFF has also been suggested, but is not suitable in detail: available
+image representations are too machine-specific or not adequately
+compressed.  The overall chunk structure of IFF is a useful concept
+that PNG has liberally borrowed from, but we did not attempt to be
+bit-for-bit compatible with IFF chunk structure.  Again this is due to
+detailed issues, notably the fact that IFF FORMs are not designed to be
+serially writable.
+
+<p>Lossless JPEG is not suitable because it does not provide for the
+storage of indexed-color images.  Furthermore, its lossless truecolor
+compression is often inferior to that of PNG.
+
+
+<h3><a name="R.Byte-order">12.5. Byte order</a></h3>
+
+<p>It has been asked why PNG uses network byte order.  We have selected
+one byte ordering and used it consistently.  Which order in particular
+is of little relevance, but network byte order has the advantage that
+routines to convert to and from it are already available on any platform
+that supports TCP/IP networking, <strong>including</strong> all PC
+platforms.  The functions are trivial and will be included in the
+reference implementation.
+
+<h3><a name="R.Interlacing">12.6. Interlacing</a></h3>
+
+<p>PNG's two-dimensional interlacing scheme is more complex to implement
+than GIF's line-wise interlacing.  It also costs a little more in
+file size.  However, it yields an initial image <em>eight times</em>
+faster than GIF (the first pass transmits only 1/64th of the pixels,
+compared to 1/8th for GIF).  Although this initial image is coarse, it
+is useful in many situations.  For example, if the image is a World
+Wide Web imagemap that the user has seen before, PNG's first pass is
+often enough to determine where to click.  The PNG scheme also looks
+better than GIF's, because horizontal and vertical resolution never
+differ by more than a factor of two; this avoids the
+odd "stretched"
+look seen when interlaced GIFs are filled in by replicating scanlines.
+Preliminary results show that small text in an interlaced PNG image is
+typically readable about twice as fast as in an equivalent GIF, i.e.,
+after PNG's fifth pass or 25% of the image data, instead of after GIF's
+third pass or 50%.  This is again due to PNG's more balanced increase in
+resolution.
+
+<h3><a name="R.Why-gamma">12.7. Why gamma?</a></h3>
+
+<p>It might seem natural to standardize on storing sample values
+proportional to display output intensity (that is, have gamma of 1.0).
+But in fact, it is common for images to have a gamma of less than 1.
+There are three good reasons for this:
+
+<ul>
+
+<li>CRTs have a transfer function with an exponent of <span class=expr>2.2</span>, and video
+signals are designed to be sent directly to CRTs.  Therefore, images
+obtained by frame-grabbing video already have a gamma of <span class=expr>1/2.2</span>.
+
+<p>
+
+<li>The human eye has a nonlinear response to intensity, so linear
+encoding of samples either wastes sample codes in bright areas of the
+image, or provides too few sample codes to avoid banding artifacts
+in dark areas of the image, or both.  At least 12 bits per sample
+are needed to avoid visible artifacts in linear encoding with a
+100:1 image intensity range.  An image gamma in the range 0.3 to 0.5
+allocates sample values in a way that roughly corresponds to the eye's
+response, so that 8 bits/sample are enough to avoid artifacts caused by
+insufficient sample precision in almost all images.  This makes "gamma
+encoding" a much better way of storing digital images than the simpler
+linear encoding.
+
+<p>
+
+<li>Many images are created on PCs or workstations with no gamma
+correction hardware and no software willing to provide gamma correction
+either.  In these cases, the images have had their lighting and color
+chosen to look best on this platform--they can be thought of as
+having "manual" gamma correction built in.
+To see what the image author
+intended, it is necessary to treat such images as having a gamma value
+of <span class=expr>1/2.2</span> (assuming the author was using a CRT).
+
+<p>
+
+</ul>
+
+<p>In practice, image gamma values around <span class=expr>1.0</span>, <span class=expr>1/2.2</span>,
+and <span class=expr>1/1.45</span> are all
+widely found.  Older image standards such as GIF and JFIF often do not
+account for this fact.  The exchange of images among a variety of systems
+has led to widespread problems with images appearing "too dark"
+or "too light".
+
+<p>PNG expects viewers to compensate for image gamma at the time that
+the image is displayed.  Another possible approach is to expect encoders
+to convert all images to a uniform gamma at encoding time.  While that
+method would speed viewers slightly, it has fundamental flaws:
+
+<ul>
+
+<li>Gamma correction is inherently lossy due to quantization and
+roundoff error.  Requiring conversion at encoding time thus causes
+irreversible loss.  Since PNG is intended to be a lossless storage
+format, this is undesirable; we should store unmodified source data.
+
+<p>
+
+<li>The encoder might not know the source gamma value.  If the decoder
+does gamma correction at viewing time, it can adjust the gamma (change
+the displayed brightness) in response to feedback from a human user.  The
+encoder has no such recourse.
+
+<p>
+
+<li>Whatever "standard" gamma we settled on would be wrong for some
+displays.  Hence viewers would still need gamma correction capability.
+
+<p>
+
+</ul>
+
+
+<p>Since there will always be images with no gamma or an incorrect
+recorded gamma, good viewers will need to incorporate gamma adjustment
+code anyway.  Gamma correction at viewing time is thus the right way to
+go.
+
+<p>Historical note:  Version 1.0 of this specification used the
+<span class=cn>gAMA</span> chunk to express the relationship between the file samples
+and the "original scene intensity" (camera input) rather than the
+desired display output intensity.  This was changed in version 1.1 for
+the following reasons:
+
+<ul>
+
+<li>The decoder needs to know the desired display output in order
+to do its job, but there was not enough information in the file to
+convert from the original scene to the display output.  The version
+1.0 specification claimed that the conversion depended only on viewing
+conditions at the display, but that was an error; it also depends on
+conditions at the camera.
+
+<p>
+
+<li>Faithful reproduction of the original scene is not always the goal.
+Sometimes deliberate distortion is desired.
+
+<p>
+
+<li>For hand-drawn images there is no "original scene".
+
+<p>
+
+</ul>
+
+<p>Because the gamma-related recommendations in version 1.0 were
+imprecise, it was not clear what value to put in a <span class=cn>gAMA</span> chunk
+in common situations.  For an image drawn on a CRT display with no
+LUT under unknown viewing conditions, an argument could be made for
+any value between 40000 and 50000.  Real applications were observed
+to write 45000 or 45455, and the latter is recommended by the current
+specification.
+
+<p>See <a href="PNG-GammaAppendix.html">Gamma Tutorial</a> 
+for more information.
+
+<h3><a name="R.Non-premultiplied-alpha">12.8. Non-premultiplied alpha</a></h3>
+
+<p>PNG uses "unassociated" or "non-premultiplied" alpha so that
+images with separate transparency masks can be stored losslessly.
+Another common technique, "premultiplied alpha", stores pixel values
+premultiplied by the alpha fraction; in effect, the image is already
+composited against a black background.  Any image data hidden by
+the transparency mask is irretrievably lost by that method, since
+multiplying by a zero alpha value always produces zero.
+
+<p>Some image rendering techniques generate images with premultiplied
+alpha (the alpha value actually represents how much of the pixel is
+covered by the image).  This representation can be converted to PNG
+by dividing the sample values by alpha, except where alpha is zero.
+The result will look good if displayed by a viewer that handles alpha
+properly, but will not look very good if the viewer ignores the alpha
+channel.
+
+<p>Although each form of alpha storage has its advantages, we did not
+want to require all PNG viewers to handle both forms.  We standardized
+on non-premultiplied alpha as being the lossless and more general case.
+
+<h3><a name="R.Filtering">12.9. Filtering</a></h3>
+
+<p>PNG includes filtering capability because filtering can significantly
+reduce the compressed size of truecolor and grayscale images.  Filtering
+is also sometimes of value on indexed-color images, although this is
+less common.
+
+<p>The filter algorithms are defined to operate on bytes, rather than
+pixels; this gains simplicity and speed with very little cost in
+compression performance.  Tests have shown that filtering is usually
+ineffective for images with fewer than 8 bits per sample, so providing
+pixelwise filtering for such images would be pointless.  For 16
+bit/sample data, bytewise filtering is nearly as effective as pixelwise
+filtering, because MSBs are predicted from adjacent MSBs, and LSBs are
+predicted from adjacent LSBs.
+
+
+<p>The encoder is allowed to change filters for each new scanline.
+This creates no additional complexity for decoders, since a decoder is
+required to contain defiltering logic for every filter type anyway.
+The only cost is an extra byte per scanline in the pre-compression
+datastream.  Our tests showed that when the same filter is selected for
+all scanlines, this extra byte compresses away to almost nothing, so
+there is little storage cost compared to a fixed filter specified for
+the whole image.  And the potential benefits of adaptive filtering are
+too great to ignore.  Even with the simplistic filter-choice heuristics
+so far discovered, adaptive filtering usually outperforms fixed filters.
+In particular, an adaptive filter can change behavior for successive
+passes of an interlaced image; a fixed filter cannot.
+
+<h3><a name="R.Text-strings">12.10. Text strings</a></h3>
+
+<p>Most graphics file formats include the ability to store some textual
+information along with the image.  But many applications need more than
+that: they want to be able to store several identifiable pieces of text.
+For example, a database using PNG files to store medical X-rays would
+likely want to include patient's name, doctor's name, etc.  A simple way
+to do this in PNG would be to invent new private chunks holding text.
+The disadvantage of such an approach is that other applications would
+have no idea what was in those chunks, and would simply ignore them.
+Instead, we recommend that textual information be stored in standard
+<span class=cn>text</span> chunks with suitable keywords.  Use of <span class=cn>text</span> tells
+any PNG viewer that the chunk contains text that might be of interest to
+a human user.  Thus, a person looking at the file with another viewer
+will still be able to see the text, and even understand what it is
+if the keywords are reasonably self-explanatory.  (To this end, we
+recommend spelled-out keywords, not abbreviations that will be hard
+for a person to understand.  Saving a few bytes on a keyword is false
+economy.)
+
+<p>The ISO 8859-1 (Latin-1) character set was chosen as a compromise
+between functionality and portability.  Some platforms cannot display
+anything more than 7-bit ASCII characters, while others can handle
+characters beyond the Latin-1 set.  We felt that Latin-1 represents
+a widely useful and reasonably portable character set.  Latin-1 is a
+direct subset of character sets commonly used on popular platforms such
+as Microsoft Windows and X Windows.  It can also be handled on Macintosh
+systems with a simple remapping of characters.
+
+<h3><a name="R.iTXt">12.11. <span class=cn>iTXt</span></a></h3>
+
+<p>This section gives the reasoning behind some of the design
+decisions in the <span class=cn>iTXt</span> chunk.
+
+<h4>Keyword: Why not Unicode?</h4>
+
+<p>Unicode is too fancy for the keyword, which is intended for both machine
+and human consumption.  Even applications without Unicode support
+should at least be able to understand the keyword (to selectively delete
+chunks, for example).
+
+<h4>Keyword: Latin-1 vs. ASCII</h4>
+
+<p>UTF-8 is used elsewhere in this chunk, and ASCII, unlike Latin-1,
+is compatible with UTF-8.  There is a translated keyword, so
+restricting the keyword to ASCII would not be a hardship.  So why
+use Latin-1?  Because all other existing chunks containing keywords
+use Latin-1, so applications can reuse code they already contain.
+
+<h4>Compression flag and compression method: Why not combine them?</h4>
+
+<p>We have deliberately avoided defining a null compression method in
+the past (for <span class=cn>tEXt/zTXt</span>), so that there would be no temptation to
+use it in <span class=cn>IHDR</span>.
+
+<h4>Language tag:</h4>
+
+<p>It is not always clear how to render Unicode text unless it is known
+what language is represented by the text.  Also, multiple <span class=cn>iTXt</span>
+chunks containing the same message in different languages could
+be present, and a decoder could automatically select the one most
+appropriate for its user.
+
+<h4>Translated keyword:</h4>
+
+<p>Registered keywords, like "Description", are registered only once,
+in a single language (probably English), so that they can be
+recognized automatically.  To be intelligible to speakers of another
+language, a translation must be provided.
+
+<h4>Text: Unicode vs. MIME charset name</h4>
+
+<p>Including a MIME charset name would be more general, and allow the
+use of legacy character sets.  But support for Unicode is growing,
+and allowing only Unicode is conceptually simpler and likely to
+eventually lead to greater interoperability.
+
+<h4>UTF-8 vs. UCS-2 vs. UCS-4</h4>
+
+<p>UCS-2 is short-sighted.  Neither UCS-2 nor UCS-4 is compatible with
+ASCII.  UTF-8 is both backward compatible with ASCII and forward
+compatible with UCS-4, and is generally the preferred encoding for
+interchange (as opposed to internal representation).
+
+<h3><a name="R.PNG-file-signature">12.12. PNG file signature</a></h3>
+
+<p>The first eight bytes of a PNG file always contain the following
+values:
+
+<pre>
+   (decimal)              137  80  78  71  13  10  26  10
+   (hexadecimal)           89  50  4e  47  0d  0a  1a  0a
+   (ASCII C notation)    \211   P   N   G  \r  \n \032 \n
+</pre>
+
+<p>This signature both identifies the file as a PNG file and provides
+for immediate detection of common file-transfer problems.  The first
+two bytes distinguish PNG files on systems that expect the first two
+bytes to identify the file type uniquely.  The first byte is chosen
+as a non-ASCII value to reduce the probability that a text file may
+be misrecognized as a PNG file; also, it catches bad file transfers
+that clear bit 7.  Bytes two through four name the format.  The CR-LF
+sequence catches bad file transfers that alter newline sequences.  The
+control-Z character stops file display under MS-DOS.  The final line
+feed checks for the inverse of the CR-LF translation problem.
+
+<p>A decoder may further verify that the next eight bytes contain an
+<span class=cn>IHDR</span> chunk header with the correct chunk length; this will
+catch bad transfers that drop or alter null (zero) bytes.
+
+<p>Note that there is no version number in the signature, nor indeed
+anywhere in the file.  This is intentional: the chunk mechanism provides
+a better, more flexible way to handle format extensions, as explained in
+<a href="PNG-Rationale.html#R.Chunk-naming-conventions">Chunk naming conventions</a>.
+
+<h3><a name="R.Chunk-layout">12.13. Chunk layout</a></h3>
+
+<p>The chunk design allows decoders to skip unrecognized or
+uninteresting chunks: it is simply necessary to skip the appropriate
+number of bytes, as determined from the length field.
+
+<p>
+Limiting chunk length to <code class=expr><lp>2<sup>31</sup><rp>-1</code> bytes avoids possible problems for
+implementations that cannot conveniently handle 4-byte unsigned values.
+In practice, chunks will usually be much shorter than that anyway.
+
+<p>A separate CRC is provided for each chunk in order to detect
+badly-transferred images as quickly as possible.  In particular,
+critical data such as the image dimensions can be validated before being
+used.
+
+<p>The chunk length is excluded from the CRC so that the CRC can be
+calculated as the data is generated; this avoids a second pass over the
+data in cases where the chunk length is not known in advance.  Excluding
+the length from the CRC does not create any extra risk of failing to
+discover file corruption, since if the length is wrong, the CRC check
+will fail: the CRC will be computed on the wrong set of bytes and then
+be tested against the wrong value from the file.
+
+<h3><a name="R.Chunk-naming-conventions">12.14. Chunk naming conventions</a></h3>
+
+<p>The chunk naming conventions allow safe, flexible extension of the
+PNG format.  This mechanism is much better than a format version number,
+because it works on a feature-by-feature basis rather than being an
+overall indicator.  Decoders can process newer files if and only if the
+files use no unknown critical features (as indicated by finding unknown
+critical chunks).  Unknown ancillary chunks can be safely ignored.
+We decided against having an overall format version number because
+experience has shown that format version numbers hurt portability as
+much as they help.  Version numbers tend to be set unnecessarily high,
+leading to older decoders rejecting files that they could have processed
+(this was a serious problem for several years after the GIF89 spec came
+out, for example).  Furthermore, private extensions can be made either
+critical or ancillary, and standard decoders should react appropriately;
+overall version numbers are no help for private extensions.
+
+<p>A hypothetical chunk for vector graphics would be a critical chunk,
+since if ignored, important parts of the intended image would be
+missing.  A chunk carrying the Mandelbrot set coordinates for a fractal
+image would be ancillary, since other applications could display the
+image without understanding what the image represents.  In general, a
+chunk type should be made critical only if it is impossible to display
+a reasonable representation of the intended image without interpreting
+that chunk.
+
+
+<p>The public/private property bit ensures that any newly defined public
+chunk type name cannot conflict with proprietary chunks that could be in
+use somewhere.  However, this does not protect users of private chunk
+names from the possibility that someone else may use the same chunk
+name for a different purpose.  It is a good idea to put additional
+identifying information at the start of the data for any private chunk
+type.
+
+<p>When a PNG file is modified, certain ancillary chunks may need
+to be changed to reflect changes in other chunks.  For example, a
+histogram chunk needs to be changed if the image data changes.  If the
+file editor does not recognize histogram chunks, copying them blindly
+to a new output file is incorrect; such chunks should be dropped.
+The safe/unsafe property bit allows ancillary chunks to be marked
+appropriately.
+
+<p>Not all possible modification scenarios are covered by the
+safe/unsafe semantics.  In particular, chunks that are dependent on the
+total file contents are not supported.  (An example of such a chunk
+is an index of <span class=cn>IDAT</span> chunk locations within the file: adding
+a comment chunk would inadvertently break the index.)  Definition of
+such chunks is discouraged.  If absolutely necessary for a particular
+application, such chunks can be made critical chunks, with consequent
+loss of portability to other applications.  In general, ancillary chunks
+can depend on critical chunks but not on other ancillary chunks.  It is
+expected that mutually dependent information should be put into a single
+chunk.
+
+<p>In some situations it may be unavoidable to make one ancillary
+chunk dependent on another.  Although the chunk property bits are
+insufficient to represent this case, a simple solution is available: in
+the dependent chunk, record the CRC of the chunk depended on.  It can
+then be determined whether that chunk has been changed by some other
+program.
+
+<p>The same technique can be useful for other purposes.  For example,
+if a program relies on the palette being in a particular order, it can
+store a private chunk containing the CRC of the <span class=cn>PLTE</span> chunk.
+If this value matches when the file is again read in, then it provides
+high confidence that the palette has not been tampered with.  Note that
+it is not necessary to mark the private chunk unsafe-to-copy when this
+technique is used; thus, such a private chunk can survive other editing
+of the file.
+
+
+<h3><a name="R.Palette-histograms">12.15. Palette histograms</a></h3>
+
+<p>A viewer may not be able to provide as many colors as are listed
+in the image's palette.  (For example, some colors could be reserved
+by a window system.)  To produce the best results in this situation,
+it is helpful to have information about the frequency with which each
+palette index actually appears, in order to choose the best palette for
+dithering or to drop the least-used colors.  Since images are often
+created once and viewed many times, it makes sense to calculate this
+information in the encoder, although it is not mandatory for the encoder
+to provide it.
+
+<p>Other image formats have usually addressed this problem by specifying
+that the palette entries should appear in order of frequency of use.
+That is an inferior solution, because it doesn't give the viewer nearly
+as much information: the viewer can't determine how much damage will be
+done by dropping the last few colors.  Nor does a sorted palette give
+enough information to choose a target palette for dithering, in the case
+that the viewer needs to reduce the number of colors substantially.
+A palette histogram provides the information needed to choose such a
+target palette without making a pass over the image data.
+
+<hr>
+<a href="PNG-Glossary.html">Previous page</a>
+<br>
+<a href="PNG-GammaAppendix.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+</BODY>
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Rationale.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+</HTML>

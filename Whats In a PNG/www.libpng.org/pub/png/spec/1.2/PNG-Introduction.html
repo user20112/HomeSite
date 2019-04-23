@@ -1,0 +1,203 @@
+<!doctype html public "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<html lang="en">
+
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Introduction.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+<head>
+
+<TITLE>PNG Specification: Introduction</TITLE>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+
+
+
+
+
+
+
+
+<h1>PNG (Portable Network Graphics) Specification, Version 1.2</h1>
+
+
+
+<hr>
+<a href="PNG-Contents.html">Previous page</a>
+<br>
+<a href="PNG-DataRep.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+<h2><a name="Introduction">1. Introduction</a></h2>
+
+<p>The Portable Network Graphics (PNG) format provides a portable,
+legally unencumbered, well-compressed, well-specified standard for
+lossless bitmapped image files.
+
+<p>Although the initial motivation for developing PNG was to replace
+GIF (CompuServe's Graphics Interchange Format), the design provides
+some useful new features not available in GIF, with minimal cost to
+developers.
+
+<p>GIF features retained in PNG include:
+
+<ul>
+
+<li>Indexed-color images of up to 256 colors.
+
+<p>
+
+<li>Streamability: files can be read and written serially, thus allowing
+the file format to be used as a communications protocol for on-the-fly
+generation and display of images.
+
+<p>
+
+<li>Progressive display: a suitably prepared image file can be displayed
+as it is received over a communications link, yielding a low-resolution
+image very quickly followed by gradual improvement of detail.
+
+<p>
+
+<li>Transparency: portions of the image can be marked as transparent,
+creating the effect of a non-rectangular image.
+
+<p>
+
+<li>Ancillary information: textual comments and other data can be stored
+within the image file.
+
+<p>
+
+<li>Complete hardware and platform independence.
+
+<p>
+
+<li>Effective, 100% lossless compression.
+
+<p>
+
+</ul>
+
+<p>Important new features of PNG, not available in GIF, include:
+
+<ul>
+
+<li>Truecolor images of up to 48 bits per pixel.
+
+<p>
+
+<li>Grayscale images of up to 16 bits per pixel.
+
+<p>
+
+<li>Full alpha channel (general transparency masks).
+
+<p>
+
+<li>Image gamma information, which supports automatic display of images
+with correct brightness/contrast regardless of the machines used to
+originate and display the image.
+
+<p>
+
+<li>Reliable, straightforward detection of file corruption.
+
+<p>
+
+<li>Faster initial presentation in progressive display mode.
+
+<p>
+
+</ul>
+
+<p>PNG is designed to be:
+
+<ul>
+
+<li>Simple and portable: developers should be able to implement PNG
+easily.
+
+<p>
+
+<li>Legally unencumbered: to the best knowledge of the PNG authors, no
+algorithms under legal challenge are used.  (Some considerable effort
+has been spent to verify this.)
+
+<p>
+
+<li>Well compressed: both indexed-color and truecolor images are
+compressed as effectively as in any other widely used lossless format,
+and in most cases more effectively.
+
+<p>
+
+<li>Interchangeable: any standard-conforming PNG decoder must read all
+conforming PNG files.
+
+<p>
+
+<li>Flexible: the format allows for future extensions and private
+add-ons, without compromising interchangeability of basic PNG.
+
+<p>
+
+<li>Robust: the design supports full file integrity checking as well as
+simple, quick detection of common transmission errors.
+
+<p>
+
+</ul>
+
+<p>The main part of this specification gives the definition of the
+file format and recommendations for encoder and decoder behavior.  An
+appendix gives the rationale for many design decisions.  Although the
+rationale is not part of the formal specification, reading it can help
+implementors understand the design.  Cross-references in the main text
+point to relevant parts of the rationale.  Additional appendixes, also
+not part of the formal specification, provide tutorials on gamma and
+color theory as well as other supporting material.
+
+<p>The words "must", "required", "should",
+"recommended", "may", and
+"optional" in this document are to be interpreted as described in
+<span class=ref>[<a href="PNG-References.html#B.RFC-2119">RFC-2119</a>]</span>, 
+which is consistent
+with their plain English meanings.  The word "can" carries the same
+force as "may".
+
+<p>See Rationale: <a href="PNG-Rationale.html#R.Why-a-new-file-format">Why a new file format?</a>, 
+<a href="PNG-Rationale.html#R.Why-these-features">Why these features?</a>,
+<a href="PNG-Rationale.html#R.Why-not-these-features">Why not these features?</a>, 
+<a href="PNG-Rationale.html#R.Why-not-use-format-X">Why not use format X?</a>.
+
+<h3>Pronunciation</h3>
+
+<p>PNG is pronounced "ping".
+
+<hr>
+<a href="PNG-Contents.html">Previous page</a>
+<br>
+<a href="PNG-DataRep.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+</BODY>
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Introduction.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+</HTML>

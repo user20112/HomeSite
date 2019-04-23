@@ -1,0 +1,174 @@
+<!doctype html public "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<html lang="en">
+
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Ordering.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+<head>
+
+<TITLE>PNG Specification: Chunk Ordering Rules</TITLE>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+
+
+
+
+
+
+
+
+<h1>PNG (Portable Network Graphics) Specification, Version 1.2</h1>
+
+
+
+<hr>
+<a href="PNG-Filters.html">Previous page</a>
+<br>
+<a href="PNG-Misc.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+<h2><a name="Ordering">7. Chunk Ordering Rules</a></h2>
+
+<p>To allow new chunk types to be added to PNG, it is necessary
+to establish rules about the ordering requirements for all chunk
+types.  Otherwise a PNG editing program cannot know what to do when it
+encounters an unknown chunk.
+
+
+<p>We define a "PNG editor" as a program that modifies a PNG
+file and wishes to preserve as much as possible of the ancillary information
+in the file.  Two examples of PNG editors are a program that adds or
+modifies text chunks, and a program that adds a suggested palette to a
+truecolor PNG file.  Ordinary image editors are not PNG editors in this
+sense, because they usually discard all unrecognized information while
+reading in an image.  (Note: we strongly encourage programs handling PNG
+files to preserve ancillary information whenever possible.)
+
+<p>As an example of possible problems, consider a hypothetical new
+ancillary chunk type that is safe-to-copy and is required to appear
+after <span class=cn>PLTE</span> if <span class=cn>PLTE</span> is present.  If our program to add
+a suggested <span class=cn>PLTE</span> does not recognize this new chunk, it may
+insert <span class=cn>PLTE</span> in the wrong place, namely after the new chunk.
+We could prevent such problems by requiring PNG editors to discard all
+unknown chunks, but that is a very unattractive solution.  Instead, PNG
+requires ancillary chunks not to have ordering restrictions like this.
+
+<p>To prevent this type of problem while allowing for future extension,
+we put some constraints on both the behavior of PNG editors and the
+allowed ordering requirements for chunks.
+
+<h3><a name="Behavior-of-PNG-editors">7.1. Behavior of PNG editors</a></h3>
+
+<p>The rules for PNG editors are:
+
+<ul>
+
+<li>When copying an unknown unsafe-to-copy ancillary chunk, a PNG editor
+must not move the chunk relative to any critical chunk.  It can relocate
+the chunk freely relative to other ancillary chunks that occur between
+the same pair of critical chunks.  (This is well defined since the
+editor must not add, delete, modify, or reorder critical chunks if it is
+preserving unknown unsafe-to-copy chunks.)
+
+<p>
+
+<li>When copying an unknown safe-to-copy ancillary chunk, a PNG editor
+must not move the chunk from before <span class=cn>IDAT</span> to after <span class=cn>IDAT</span>
+or vice versa.  (This is well defined because <span class=cn>IDAT</span> is always
+present.)  Any other reordering is permitted.
+
+<p>
+
+<li>When copying a <em>known</em> ancillary chunk type, an editor need
+only honor the specific chunk ordering rules that exist for that chunk
+type.  However, it can always choose to apply the above general rules
+instead.
+
+<p>
+
+<li>PNG editors must give up on encountering an unknown critical chunk
+type, because there is no way to be certain that a valid file will
+result from modifying a file containing such a chunk.  (Note that simply
+discarding the chunk is not good enough, because it might have unknown
+implications for the interpretation of other chunks.)
+
+<p>
+
+</ul>
+
+<p>These rules are expressed in terms of copying chunks from an input
+file to an output file, but they apply in the obvious way if a PNG file
+is modified in place.
+
+<p>See also <a href="PNG-Structure.html#Chunk-naming-conventions">Chunk naming conventions</a>.
+
+<h3><a name="Ordering-of-ancillary-chunks">7.2. Ordering of ancillary chunks</a></h3>
+
+<p>The ordering rules for an ancillary chunk type cannot be any stricter
+than this:
+
+<ul>
+
+<li>Unsafe-to-copy chunks can have ordering requirements relative to
+critical chunks.
+
+<p>
+
+<li>Safe-to-copy chunks can have ordering requirements relative to
+<span class=cn>IDAT</span>.
+
+<p>
+
+</ul>
+
+<p>The actual ordering rules for any particular ancillary chunk type
+may be weaker.  See for example the ordering rules for the standard
+ancillary chunk types (<a href="PNG-Chunks.html#C.Summary-of-standard-chunks">Summary of standard chunks</a>).
+
+<p><strong>Decoders must not assume more about the positioning of any
+ancillary chunk than is specified by the chunk ordering rules.</strong>
+In particular, it is never valid to assume that a specific ancillary
+chunk type occurs with any particular positioning relative to other
+ancillary chunks.  (For example, it is unsafe to assume that your
+private ancillary chunk occurs immediately before <span class=cn>IEND</span>.  Even
+if your application always writes it there, a PNG editor might have
+inserted some other ancillary chunk after it.  But you can safely
+assume that your chunk will remain somewhere between <span class=cn>IDAT</span> and
+<span class=cn>IEND</span>.)
+
+<h3><a name="Ordering-of-critical-chunks">7.3. Ordering of critical chunks</a></h3>
+
+<p>Critical chunks can have arbitrary ordering requirements, because
+PNG editors are required to give up if they encounter unknown critical
+chunks.  For example, <span class=cn>IHDR</span> has the special ordering rule that
+it must always appear first.  A PNG editor, or indeed any PNG-writing
+program, must know and follow the ordering rules for any critical chunk
+type that it can emit.
+
+<hr>
+<a href="PNG-Filters.html">Previous page</a>
+<br>
+<a href="PNG-Misc.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+</BODY>
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Ordering.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+</HTML>

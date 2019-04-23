@@ -1,0 +1,792 @@
+<!doctype html public "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+
+<html lang="en">
+
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Decoders.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+<head>
+
+<TITLE>PNG Specification: Recommendations for Decoders</TITLE>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+
+
+
+
+
+
+
+
+<h1>PNG (Portable Network Graphics) Specification, Version 1.2</h1>
+
+
+
+<hr>
+<a href="PNG-Encoders.html">Previous page</a>
+<br>
+<a href="PNG-Glossary.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+<h2><a name="Decoders">10. Recommendations for Decoders</a></h2>
+
+<p>This chapter gives some recommendations for decoder behavior.  The
+only absolute requirement on a PNG decoder is that it successfully read
+any file conforming to the format specified in the preceding chapters.
+However, best results will usually be achieved by following these
+recommendations.
+
+<h3><a name="D.Error-checking">10.1. Error checking</a></h3>
+
+<p>To ensure early detection of common file-transfer problems, decoders
+should verify that all eight bytes of the PNG file signature are
+correct.  (See Rationale: <a href="PNG-Rationale.html#R.PNG-file-signature">PNG file signature</a>.)  
+A decoder can have additional confidence in the file's
+integrity if the next eight bytes are an <span class=cn>IHDR</span> chunk header with
+the correct chunk length.
+
+<p>Unknown chunk types must be handled as described in <a href="PNG-Structure.html#Chunk-naming-conventions">Chunk naming conventions</a>.
+An unknown chunk type is <em>not</em> to be treated as an error unless
+it is a critical chunk.
+
+<p>It is strongly recommended that decoders should verify the CRC on
+each chunk.
+
+<p>In some situations it is desirable to check chunk headers (length and
+type code) before reading the chunk data and CRC.  The chunk type can
+be checked for plausibility by seeing whether all four bytes are ASCII
+letters (codes 65-90 and 97-122); note that this need be done
+only for
+unrecognized type codes.  If the total file size is known (from file
+system information, HTTP protocol, etc), the chunk length can be checked
+for plausibility as well.
+
+<p>If CRCs are not checked, dropped/added data bytes or an erroneous
+chunk length can cause the decoder to get out of step and misinterpret
+subsequent data as a chunk header.  Verifying that the chunk type
+contains letters is an inexpensive way of providing early error
+detection in this situation.
+
+<p>For known-length chunks such as <span class=cn>IHDR</span>, decoders should treat
+an unexpected chunk length as an error.  Future extensions to this
+specification will not add new fields to existing chunks; instead, new
+chunk types will be added to carry new information.
+
+<p>Unexpected values in fields of known chunks (for example, an
+unexpected compression method in the <span class=cn>IHDR</span> chunk) must be
+checked for and treated as errors.  However, it is recommended
+that unexpected field values be treated as fatal errors only in
+<em>critical</em> chunks.  An unexpected value in an ancillary chunk
+can be handled by ignoring the whole chunk as though it were an unknown
+chunk type.  (This recommendation assumes that the chunk's CRC has been
+verified.  In decoders that do not check CRCs, it is safer to treat any
+unexpected value as indicating a corrupted file.)
+
+<h3><a name="D.Pixel-dimensions">10.2. Pixel dimensions</a></h3>
+
+<p>Non-square pixels can be represented (see the <span class=cn>pHYs</span> chunk),
+but viewers are not required to account for them; a viewer can present
+any PNG file as though its pixels are square.
+
+<p>Conversely, viewers running on display hardware with non-square
+pixels are strongly encouraged to rescale images for proper display.
+
+<h3><a name="D.Truecolor-image-handling">10.3. Truecolor image handling</a></h3>
+
+<p>To achieve PNG's goal of universal interchangeability, decoders are
+required to accept all types of PNG image: indexed-color, truecolor, and
+grayscale.  Viewers running on indexed-color display hardware need to
+be able to reduce truecolor images to indexed format for viewing.  This
+process is usually called "color quantization".
+
+
+<p>A simple, fast way of doing this is to reduce the image to a fixed
+palette.  Palettes with uniform color spacing ("color cubes") are
+usually used to minimize the per-pixel computation.  For photograph-like
+images, dithering is recommended to avoid ugly contours in what should
+be smooth gradients; however, dithering introduces graininess that can
+be objectionable.
+
+<p>The quality of rendering can be improved substantially by using a
+palette chosen specifically for the image, since a color cube usually
+has numerous entries that are unused in any particular image.  This
+approach requires more work, first in choosing the palette, and second
+in mapping individual pixels to the closest available color.  PNG allows
+the encoder to supply suggested palettes, but not all encoders will do
+so, and the suggested palettes may be unsuitable in any case (they may
+have too many or too few colors).  High-quality viewers will therefore
+need to have a palette selection routine at hand.  A large lookup table
+is usually the most feasible way of mapping individual pixels to palette
+entries with adequate speed.
+
+<p>Numerous implementations of color quantization
+are available.  The PNG reference implementation, <a href="ftp://ftp.uu.net/graphics/png/src/">libpng</a>, 
+includes code for
+the purpose.
+
+<h3><a name="D.Sample-depth-rescaling">10.4. Sample depth rescaling</a></h3>
+
+<p>Decoders may wish to scale PNG data to a lesser sample depth (data
+precision) for display.  For example, 16-bit data will need to be
+reduced to 8-bit depth for use on most present-day display hardware.
+Reduction of 8-bit data to 5-bit depth is also common.
+
+<p>The most accurate scaling is achieved by the linear equation
+
+<pre>
+   output = ROUND(input * MAXOUTSAMPLE / MAXINSAMPLE)
+</pre>
+
+<p>where
+
+<pre>
+   <code class=expr>MAXINSAMPLE = (2^sampledepth)-1</code>
+   <code class=expr>MAXOUTSAMPLE = (2^desired_sampledepth)-1</code>
+</pre>
+
+<p>A slightly less accurate conversion is achieved by simply shifting
+right by <code class=expr>sampledepth&nbsp;-&nbsp;desired_sampledepth</code> places.  For
+example, to reduce 16-bit samples to 8-bit,
+one need only discard the
+low-order byte.  In many situations the shift method is sufficiently
+accurate for display purposes, and it is certainly much faster.  (But
+if gamma correction is being done, sample rescaling can be merged
+into the gamma correction lookup table, as is illustrated in <a href="PNG-Decoders.html#D.Decoder-gamma-handling">Decoder gamma handling</a>.)
+
+<p>When an <span class=cn>sBIT</span> chunk is present, the original pre-PNG data
+can be recovered by shifting right to the sample depth specified by
+<span class=cn>sBIT</span>.  Note that linear scaling will not necessarily reproduce
+the original data, because the encoder is not required to have used
+linear scaling to scale the data up.  However, the encoder is required
+to have used a method that preserves the high-order bits, so shifting
+always works.  This is the only case in which shifting might be said to
+be more accurate than linear scaling.
+
+<p>When comparing pixel values to <span class=cn>tRNS</span> chunk values to detect
+transparent pixels, it is necessary to do the comparison exactly.
+Therefore, transparent pixel detection must be done before reducing
+sample precision.
+
+<h3><a name="D.Decoder-gamma-handling">10.5. Decoder gamma handling</a></h3>
+
+<p>See <a href="PNG-GammaAppendix.html">Gamma Tutorial</a> 
+if you aren't already
+familiar with gamma issues.
+
+<p>Decoders capable of full-fledged color management <span class=ref>[<a href="PNG-References.html#B.ICC">ICC</a>]</span> 
+will perform more sophisticated
+calculations than what is described here.  Otherwise, this section
+applies.
+
+<p>For an image display program to produce correct tone reproduction, it
+is necessary to take into account the relationship between file samples
+and display output, and the transfer function of the display system.
+This can be done by calculating
+
+<pre>
+   <code class=expr>sample = integer_sample / (2^bitdepth - 1.0)</code>
+   <code class=expr>display_output = sample ^ (1.0 / gamma)</code>
+   <code class=expr>display_input = inverse_display_transfer(display_output)</code>
+   <code class=expr>framebuf_sample = ROUND(display_input * MAX_FRAMEBUF_SAMPLE)</code>
+</pre>
+
+<p>where <code class=expr>integer_sample</code> is the sample value from the file,
+<code class=expr>framebuf_sample</code> is the value to write into the frame buffer, and
+<code class=expr>MAX_FRAMEBUF_SAMPLE</code> is the maximum value of a frame buffer sample
+(255 for 8-bit, 31 for 5-bit, etc).  The first line converts an
+integer sample into a normalized 0-to-1 floating-point value,
+the second converts to a value proportional to the desired display output
+intensity, the third accounts for the display system's transfer
+function, and the fourth converts to an integer frame buffer sample.
+
+<p>A step could be inserted between the second and third to adjust
+<code class=expr>display_output</code> to account for the difference between the actual
+viewing conditions and the reference viewing conditions.  However,
+this adjustment requires accounting for veiling glare, black mapping,
+and color appearance models, none of which can be well approximated by
+power functions.  The calculations are not described here.  If viewing
+conditions are ignored, the error will usually be small.
+
+<p>Typically, the display transfer function can be approximated by a
+power function with exponent <code class=expr>display_exponent</code>, in which case
+the second and third lines can be merged into
+
+<pre>
+   <code class=expr>display_input = sample ^ (1.0 / (gamma * display_exponent))</code>
+                 <code class=expr>= sample ^ decoding_exponent</code>
+</pre>
+
+<p>so as to perform only one power calculation.  For color images, the
+entire calculation is performed separately for R, G, and B values.
+
+<p>The value of gamma can be taken directly from the <span class=cn>gAMA</span>
+chunk.  Alternatively, an application may wish to allow the user to
+adjust the appearance of the displayed image by influencing the value
+of gamma.  For example, the user could manually set a parameter called
+<code class=expr>user_exponent</code> that defaults to 1.0, and the application could set
+
+<pre>
+   gamma = gamma_from_file / user_exponent
+   decoding_exponent = 1.0 / (gamma * display_exponent)
+         = user_exponent / (gamma_from_file * display_exponent)
+</pre>
+
+<p>The user would set <code class=expr>user_exponent</code> greater than 1 to darken the
+mid-level tones, or less than 1 to lighten them.
+
+<p>It is <em>not</em> necessary to perform transcendental math for
+every pixel.  Instead, compute a lookup table that gives the correct
+output value for every possible sample value.  This requires only
+256 calculations per image (for 8-bit accuracy), not one or three
+calculations per pixel.  For an indexed-color image, a one-time
+correction of the palette is sufficient, unless the image uses
+transparency and is being displayed against a nonuniform background.
+
+<p>If floating-point calculations are not possible, gamma correction
+tables can be computed using integer arithmetic and a precomputed
+table of logarithms.  Example code appears in the "Extensions to
+the PNG Specification" document <span class=ref>[<a href="PNG-References.html#B.PNG-EXTENSIONS" >PNG-EXTENSIONS</a>]</span>.
+
+<p>When the incoming image has unknown gamma (<span class=cn>gAMA</span>,
+<span class=cn>sRGB</span>, and <span class=cn>iCCP</span> all absent), choose a likely default
+gamma value, but allow the user to select a new one if the result proves
+too dark or too light.  The default gamma can depend on other knowledge
+about the image, like whether it came from the Internet or from the
+local system.
+
+<p>In practice, it is often difficult to determine what value of the
+display exponent should be used.  In systems with no built-in gamma
+correction, the display exponent is determined entirely by the CRT
+(cathode ray tube).
+Assume a CRT exponent of 2.2 unless detailed calibration measurements of
+this particular CRT are available.
+
+<p>Many modern frame buffers have lookup tables that are used to perform
+gamma correction, and on these systems the display exponent value should
+be the exponent of the lookup table and CRT combined.  You may not be
+able to find out what the lookup table contains from within an image
+viewer application, so you may have to ask the user what the display
+system's exponent is.  Unfortunately, different manufacturers use
+different ways of specifying what should go into the lookup table, so
+interpretation of the system "gamma" value is system-dependent.
+The <a href="PNG-GammaAppendix.html">Gamma Tutorial</a> 
+gives some examples.
+
+
+<p>The response of real displays is actually more complex than can be
+described by a single number (the display exponent).  If actual
+measurements
+of the monitor's light output as a function of voltage input are
+available, the third and fourth lines of the computation above can be
+replaced by a lookup in these measurements, to find the actual frame
+buffer value that most nearly gives the desired brightness.
+
+<h3><a name="D.Decoder-color-handling">10.6. Decoder color handling</a></h3>
+
+<p>See <a href="PNG-ColorAppendix.html">Color Tutorial</a> 
+if you aren't already
+familiar with color issues.
+
+<p>In many cases, decoders will treat image data in PNG files as
+device-dependent RGB data and display it without modification (except
+for appropriate gamma correction).  This provides the fastest display
+of PNG images.  But unless the viewer uses exactly the same display
+hardware as the original image author used, the colors will not be
+exactly the same as the original author saw, particularly for darker
+or near-neutral colors.  The <span class=cn>cHRM</span> chunk provides information
+that allows closer color matching than that provided by gamma correction
+alone.
+
+<p>Decoders can use the <span class=cn>cHRM</span> data to transform the image data
+from RGB to CIE XYZ and thence into a perceptually linear color space
+such as CIE LAB.  They can then partition the colors to generate an
+optimal palette, because the geometric distance between two colors
+in CIE LAB is strongly related to how different those colors appear
+(unlike, for example, RGB or XYZ spaces).  The resulting palette of
+colors, once transformed back into RGB color space, could be used for
+display or written into a <span class=cn>PLTE</span> chunk.
+
+<p>Decoders that are part of image processing applications might also
+transform image data into CIE LAB space for analysis.
+
+
+<p>In applications where color fidelity is critical, such as product
+design, scientific visualization, medicine, architecture, or
+advertising, decoders can transform the image data from source RGB to
+the display RGB space of the monitor used to view the image.  This
+involves calculating the matrix to go from source RGB to XYZ and the
+matrix to go from XYZ to display RGB, then combining them to produce the
+overall transformation.  The decoder is responsible for implementing
+gamut mapping.
+
+<p>Decoders running on platforms that have a Color Management System
+(CMS) can pass the image data, <span class=cn>gAMA</span>, and <span class=cn>cHRM</span> values to
+the CMS for display or further processing.
+
+<p>Decoders that provide color printing facilities can use the
+facilities in Level 2 PostScript to specify image data in calibrated RGB
+space or in a device-independent color space such as XYZ.  This will
+provide better color fidelity than a simple RGB to CMYK conversion.
+The PostScript Language Reference manual <span class=ref>[<a href="PNG-References.html#B.POSTSCRIPT" >POSTSCRIPT</a>]</span> 
+gives examples.  Such decoders are responsible
+for implementing gamut mapping between source RGB (specified in the
+<span class=cn>cHRM</span> chunk) and the target printer.  The PostScript interpreter
+is then responsible for producing the required colors.
+
+<p>Decoders can use the <span class=cn>cHRM</span> data to calculate an accurate
+grayscale representation of a color image.  Conversion from RGB to
+gray is simply a case of calculating the Y (luminance) component of
+XYZ, which is a weighted sum of the R, G, and B values.  The weights
+depend on the monitor type, i.e., the values in the <span class=cn>cHRM</span> chunk.
+Decoders may wish to do this for PNG files with no <span class=cn>cHRM</span> chunk.
+In that case, a reasonable default would be the CCIR 709 primaries
+<span class=ref>[<a href="PNG-References.html#B.ITU-R-BT709">ITU-R-BT709</a>]</span>.  
+Do <em>not</em>
+use the original NTSC primaries, unless you really do have an image
+color-balanced for such a monitor.  Few monitors ever used the NTSC
+primaries, so such images are probably nonexistent these days.
+
+<h3><a name="D.Background-color">10.7. Background color</a></h3>
+
+<p>The background color given by <span class=cn>bKGD</span> will typically be used to
+fill unused screen space around the image, as well as any transparent
+pixels within the image.  (Thus, <span class=cn>bKGD</span> is valid and useful even
+when the image does not use transparency.)  If no <span class=cn>bKGD</span> chunk is
+present, the viewer will need to make its own decision about a suitable
+background color.
+
+
+<p>Viewers that have a specific background against which to present the
+image (such as Web browsers) should ignore the <span class=cn>bKGD</span> chunk, in
+effect overriding <span class=cn>bKGD</span> with their preferred background color or
+background image.
+
+<p>The background color given by <span class=cn>bKGD</span> is not to be
+considered transparent, even if it happens to match the color given
+by <span class=cn>tRNS</span> (or, in the case of an indexed-color image, refers
+to a palette index that is marked as transparent by <span class=cn>tRNS</span>).
+Otherwise one would have to imagine something "behind the background" to
+composite against.  The background color is either used as background or
+ignored; it is not an intermediate layer between the PNG image and some
+other background.
+
+<p>Indeed, it will be common that <span class=cn>bKGD</span> and <span class=cn>tRNS</span>
+specify the same color, since then a decoder that does not implement
+transparency processing will give the intended display, at least when no
+partially-transparent pixels are present.
+
+<h3><a name="D.Alpha-channel-processing">10.8. Alpha channel processing</a></h3>
+
+<p>In the most general case, the alpha channel can be used to composite
+a foreground image against a background image; the PNG file defines
+the foreground image and the transparency mask, but not the background
+image.  Decoders are <em>not</em> required to support this most general
+case.  It is expected that most will be able to support compositing
+against a single background color, however.
+
+<p>The equation for computing a composited sample value is
+
+<pre>
+   output = alpha * foreground + (1-alpha) * background
+</pre>
+
+<p>where the alpha value and the input and output sample values are
+expressed as
+fractions in the range 0 to 1.  This computation should be performed
+with intensity samples (not gamma-encoded samples).  For color images,
+the computation is done separately for R, G, and B samples.
+
+<p>The following code illustrates the general case of compositing a
+foreground image over a background image.  It assumes that you have the
+original pixel data available for the background image, and that output
+is to a frame buffer for display.  Other variants are possible; see the
+comments below the code.  The code allows the sample depths and gamma
+values of foreground and background images to be different, and not
+necessarily suited to the display system.  Don't assume everything is
+the same without checking.
+
+
+<p>This code is standard C, with line numbers added for reference in the
+comments below:
+
+<pre>
+   01  int foreground[4];  /* image pixel: R, G, B, A */
+   02  int background[3];  /* background pixel: R, G, B */
+   03  int fbpix[3];       /* frame buffer pixel */
+   04  int fg_maxsample;   /* foreground max sample */
+   05  int bg_maxsample;   /* background max sample */
+   06  int fb_maxsample;   /* frame buffer max sample */
+   07  int ialpha;
+   08  float alpha, compalpha;
+   09  float gamfg, linfg, gambg, linbg, comppix, gcvideo;
+   
+       /* Get max sample values in data and frame buffer */
+   10  fg_maxsample = (1 &lt;&lt; fg_sample_depth) - 1;
+   11  bg_maxsample = (1 &lt;&lt; bg_sample_depth) - 1;
+   12  fb_maxsample = (1 &lt;&lt; frame_buffer_sample_depth) - 1;
+       /*
+        * Get integer version of alpha.
+        * Check for opaque and transparent special cases;
+        * no compositing needed if so.
+        *
+        * We show the whole gamma decode/correct process in
+        * floating point, but it would more likely be done
+        * with lookup tables.
+        */
+   13  ialpha = foreground[3];
+   
+   14  if (ialpha == 0) {
+           /*
+            * Foreground image is transparent here.
+            * If the background image is already in the frame
+            * buffer, there is nothing to do.
+            */
+   15      ;
+   16  } else if (ialpha == fg_maxsample) {
+           /*
+            * Copy foreground pixel to frame buffer.
+            */
+   17      for (i = 0; i &lt; 3; i++) {
+   18          gamfg = (float) foreground[i] / fg_maxsample;
+   19          linfg = pow(gamfg, 1.0/fg_gamma);
+   20          comppix = linfg;
+   21          gcvideo = pow(comppix, 1.0/display_exponent);
+   22          fbpix[i] = (int) (gcvideo * fb_maxsample + 0.5);
+   23      }
+   24  } else {
+           /*
+            * Compositing is necessary.
+            * Get floating-point alpha and its complement.
+            * Note: alpha is always linear; gamma does not
+            * affect it.
+            */
+   25      alpha = (float) ialpha / fg_maxsample;
+   26      compalpha = 1.0 - alpha;
+   
+   27      for (i = 0; i &lt; 3; i++) {
+               /*
+                * Convert foreground and background to
+                * floating point, then undo gamma encoding.
+                */
+   28          gamfg = (float) foreground[i] / fg_maxsample;
+   29          linfg = pow(gamfg, 1.0/fg_gamma);
+   30          gambg = (float) background[i] / bg_maxsample;
+   31          linbg = pow(gambg, 1.0/bg_gamma);
+               /*
+                * Composite.
+                */
+   32          comppix = linfg * alpha + linbg * compalpha;
+               /*
+                * Gamma correct for display.
+                * Convert to integer frame buffer pixel.
+                */
+   33          gcvideo = pow(comppix, 1.0/display_exponent);
+   34          fbpix[i] = (int) (gcvideo * fb_maxsample + 0.5);
+   35      }
+   36  }
+</pre>
+
+<p>Variations:
+
+<ol>
+
+<li>If output is to another PNG image file instead of a frame buffer,
+lines 21, 22, 33, and 34 should be changed to be something like:
+
+<pre>
+   /*
+    * Gamma encode for storage in output file.
+    * Convert to integer sample value.
+    */
+   gamout = pow(comppix, outfile_gamma);
+   outpix[i] = (int) (gamout * out_maxsample + 0.5);
+</pre>
+
+<p>Also, it becomes necessary to process background pixels when alpha is
+zero, rather than just skipping pixels.  Thus, line 15 will need to be
+replaced by copies of lines 17-23, but processing background instead of
+foreground pixel values.
+
+<p>
+
+<li>If the sample depths of the output file, foreground file, and
+background file are all the same, and the three gamma values also match,
+then the no-compositing code in lines 14-23 reduces to nothing more than
+copying pixel values from the input file to the output file if alpha is
+one, or copying pixel values from background to output file if alpha is
+zero.  Since alpha is typically either zero or one for the vast majority
+of pixels in an image, this is a great savings.  No gamma computations
+are needed for most pixels.
+
+<p>
+
+<li>When the sample depths and gamma values all match, it may appear
+attractive to skip the gamma decoding and encoding (lines 28-31, 33-34)
+and just perform line 32 using gamma-encoded sample values.  Although
+this doesn't hurt image quality too badly, the time savings are small if
+alpha values of zero and one are special-cased as recommended here.
+
+<p>
+
+<li>If the original pixel values of the background image are no longer
+available, only processed frame buffer pixels left by display of the
+background image, then lines 30 and 31 need to extract intensity from
+the frame buffer pixel values using code like:
+
+<pre>
+   /*
+    * Convert frame buffer value into intensity sample.
+    */
+   gcvideo = (float) fbpix[i] / fb_maxsample;
+   linbg = pow(gcvideo, display_exponent);
+</pre>
+
+<p>However, some roundoff error can result, so it is better to have the
+original background pixels available if at all possible.
+
+<p>
+
+<li>Note that lines 18-22 are performing exactly the same gamma
+computation that is done when no alpha channel is present.  So, if
+you handle the no-alpha case with a lookup table, you can use the
+same lookup table here.  Lines 28-31 and 33-34 can also be
+done with (different) lookup tables.
+
+<p>
+
+<li>Of course, everything here can be done in integer arithmetic.  Just
+be careful to maintain sufficient precision all the way through.
+
+<p>
+
+</ol>
+
+<p>Note: in floating-point arithmetic, no overflow or underflow checks
+are needed, because the input sample values are guaranteed to be between
+0 and 1, and compositing always yields a result that is in between the
+input values (inclusive).  With integer arithmetic, some roundoff-error
+analysis might be needed to guarantee no overflow or underflow.
+
+
+<p>When displaying a PNG image with full alpha channel, it is important
+to be able to composite the image against some background, even if it's
+only black.  Ignoring the alpha channel will cause PNG images that have
+been converted from an associated-alpha representation to look wrong.
+(Of course, if the alpha channel is a separate transparency mask, then
+ignoring alpha is a useful option: it allows the hidden parts of the
+image to be recovered.)
+
+<p>Even if the decoder author does not wish to implement true
+compositing logic, it is simple to deal with images that contain only
+zero and one alpha values.  (This is implicitly true for grayscale and
+truecolor PNG files that use a <span class=cn>tRNS</span> chunk; for indexed-color
+PNG files, it is easy to check whether <span class=cn>tRNS</span> contains any values
+other than 0 and 255.)  In this simple case, transparent pixels are
+replaced by the background color, while others are unchanged.
+
+
+<p>If a decoder contains only this much
+transparency capability, it should deal with a full alpha channel
+by converting it to a binary alpha channel, either by treating all
+nonzero alpha values as fully opaque or by dithering.  Neither
+approach will yield very good results for images converted
+from associated-alpha formats, but it's better than doing nothing.
+Dithering full alpha to binary alpha is very much like dithering
+grayscale to black-and-white, except that all fully transparent
+and fully opaque pixels should be left unchanged by the dither.
+
+
+<h3><a name="D.Progressive-display">10.9. Progressive display</a></h3>
+
+<p>When receiving images over slow transmission links, decoders
+can improve perceived performance by displaying interlaced images
+progressively.  This means that as each pass is received, an
+approximation to the complete image is displayed based on the data
+received so far.  One simple yet pleasing effect can be obtained
+by expanding each received pixel to fill a rectangle covering the
+yet-to-be-transmitted pixel positions below and to the right of the
+received pixel.  This process can be described by the following
+pseudocode:
+
+<pre>
+   Starting_Row [1..7] =  { 0, 0, 4, 0, 2, 0, 1 }
+   Starting_Col [1..7] =  { 0, 4, 0, 2, 0, 1, 0 }
+   Row_Increment [1..7] = { 8, 8, 8, 4, 4, 2, 2 }
+   Col_Increment [1..7] = { 8, 8, 4, 4, 2, 2, 1 }
+   Block_Height [1..7] =  { 8, 8, 4, 4, 2, 2, 1 }
+   Block_Width [1..7] =   { 8, 4, 4, 2, 2, 1, 1 }
+   
+   pass := 1
+   while pass &lt;= 7
+   begin
+       row := Starting_Row[pass]
+   
+       while row &lt; height
+       begin
+           col := Starting_Col[pass]
+   
+           while col &lt; width
+           begin
+               visit (row, col,
+                      min (Block_Height[pass], height - row),
+                      min (Block_Width[pass], width - col))
+               col := col + Col_Increment[pass]
+           end
+           row := row + Row_Increment[pass]
+       end
+   
+       pass := pass + 1
+   end
+</pre>
+
+<p>Here, the function <code class=expr>visit(row,column,height,width)</code> obtains the next
+transmitted pixel and paints a rectangle of the specified height and
+width, whose upper-left corner is at the specified row and column, using
+the color indicated by the pixel.  Note that row and column are measured
+from 0,0 at the upper left corner.
+
+<p>If the decoder is merging the received image with a background image,
+it may be more convenient just to paint the received pixel positions;
+that is, the <code class=expr>visit()</code> function sets only the pixel at the specified
+row and column, not the whole rectangle.  This produces a "fade-in"
+effect as the new image gradually replaces the old.  An advantage of
+this approach is that proper alpha or transparency processing can be
+done as each pixel is replaced.  Painting a rectangle as described above
+will overwrite background-image pixels that may be needed later, if the
+pixels eventually received for those positions turn out to be wholly
+or partially transparent.  Of course, this is a problem only if the
+background image is not stored anywhere offscreen.
+
+<h3><a name="D.Sugg-palette-hist">10.10. Suggested-palette and histogram usage</a></h3>
+
+<p>For viewers running on indexed-color hardware trying to display
+a truecolor image, or an indexed-color image whose palette is too
+large for the framebuffer, the encoder may have provided one or more
+suggested palettes in <span class=cn>sPLT</span> chunks.  If one of them is found to
+be suitable, based on its size and perhaps its name, the decoder can
+use that palette.  Note that suggested palettes with a sample depth
+different from what the decoder needs can be converted using sample
+depth rescaling (See Recommendations for
+Decoders: <a href="PNG-Decoders.html#D.Sample-depth-rescaling">Sample depth rescaling</a>).
+
+<p>When the background is a solid color, the decoder should composite
+the image and the suggested palette against that color, then quantize
+the resulting image to the resulting RGB palette.  When the image uses
+transparency and the background is not a solid color, no suggested
+palette is likely to be useful.
+
+<p>For truecolor images, a suggested palette might also be provided in
+a <span class=cn>PLTE</span> chunk.  If the image has a <span class=cn>tRNS</span> chunk and the
+background is a solid color, the viewer can adapt the suggested paletted
+for use with this background color.  To do this, replace the palette
+entry closest to the <span class=cn>tRNS</span> color with the background color, or
+just add a palette entry for the background color if the viewer can
+handle more colors than there are palette entries.
+
+<p>For images of color type 6 (truecolor with alpha channel), any
+<span class=cn>PLTE</span> chunk should have been designed for display of the image
+against a uniform background of the color specified by <span class=cn>bKGD</span>.
+Viewers should probably ignore the palette if they intend to use a
+different background, or if the <span class=cn>bKGD</span> chunk is missing.  Viewers
+can use the suggested palette for display against a different background
+than it was intended for, but the results may not be very good.
+
+<p>If the viewer presents a transparent truecolor image against a
+background that is more complex than a single color, it is unlikely
+that the <span class=cn>PLTE</span> chunk will be optimal for the composite image.
+In this case it is best to perform a truecolor compositing step on
+the truecolor PNG image and background image, then color-quantize the
+resulting image.
+
+<p>In truecolor PNG files, if both <span class=cn>PLTE</span> and <span class=cn>sPLT</span>
+appear, the decoder can choose from among the palettes suggested by
+both, bearing in mind the different transparency semantics mentioned
+above.
+
+<p>The frequencies in <span class=cn>sPLT</span> and <span class=cn>hIST</span> chunks are
+useful when the viewer cannot provide as many colors as are used in
+the palette.  If the viewer is short only a few colors, it is usually
+adequate to drop the least-used colors from the palette.  To reduce
+the number of colors substantially, it's best to choose entirely new
+representative colors, rather than trying to use a subset of the
+existing palette.  This amounts to performing a new color quantization
+step; however, the existing palette and frequencies can be used as the
+input data, thus avoiding a scan of the image data.
+
+<p>If no suggested palettes are provided, a decoder can develop its own,
+at the cost of an extra pass over the image data.  Alternatively, a
+default palette (probably a color cube) can be used.
+
+<p>See also Recommendations for Encoders: <a href="PNG-Encoders.html#E.Suggested-palettes" >Suggested palettes</a>.
+
+<h3><a name="D.Text-chunk-processing">10.11. Text chunk processing</a></h3>
+
+<p>If practical, decoders should have a way to display to the user all
+<span class=cn>text</span> chunks found in the file.  Even if the
+decoder does not recognize a particular text keyword, the user might be
+able to understand it.
+
+<p>Text in the <span class=cn>tEXt</span> and <span class=cn>zTXt</span> chunks is not supposed to
+contain any characters outside the ISO
+8859-1 (Latin-1) character set (that is, no codes 0-31
+or 127-159),
+except for the newline character (decimal 10).  But decoders might
+encounter such characters anyway.  Some of these characters can be
+safely displayed (e.g., TAB, FF, and CR, decimal 9, 12, and 13,
+respectively), but others, especially the ESC character (decimal 27),
+could pose a security hazard because unexpected actions may be taken by
+display hardware or software.  To prevent such hazards, decoders should
+not attempt to directly display any non-Latin-1 characters (except for
+newline and perhaps TAB, FF, CR) encountered in a <span class=cn>tEXt</span> or
+<span class=cn>zTXt</span> chunk.  Instead, ignore them or display them in a visible
+notation such as "\nnn".  See
+<a href="PNG-Misc.html#Security-considerations">Security considerations</a>.
+
+<p>Even though encoders are supposed to represent newlines as LF, it is
+recommended that decoders not rely on this; it's best to recognize all
+the common newline combinations (CR, LF, and CR-LF) and display each as
+a single newline.  TAB can be expanded to the proper number of spaces
+needed to arrive at a column multiple of 8.
+
+<p>Decoders running on systems with non-Latin-1 character set encoding
+should provide character code remapping so that Latin-1 characters are
+displayed correctly.  Some systems may not provide all the characters
+defined in Latin-1.  Mapping unavailable characters to a visible
+notation such as "\nnn" is a good fallback.  In particular,
+character
+codes 127-255 should be displayed only if they are printable characters
+on the decoding system.  Some systems may interpret such codes as
+control characters; for security, decoders running on such systems
+should not display such characters literally.
+
+<p>Decoders should be prepared to display text chunks that contain
+any number of printing characters between newline characters, even
+though encoders are encouraged to avoid creating lines in excess of 79
+characters.
+
+<hr>
+<a href="PNG-Encoders.html">Previous page</a>
+<br>
+<a href="PNG-Glossary.html">Next page</a>
+<br>
+<a href="PNG-Contents.html">Table of contents</a>
+<hr>
+
+</BODY>
+
+<!-- Mirrored from www.libpng.org/pub/png/spec/1.2/PNG-Decoders.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 26 Jan 2019 01:13:14 GMT -->
+</HTML>

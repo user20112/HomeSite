@@ -1,0 +1,105 @@
+  	  body {
+		position: absolute;
+		font: 80% arial, helvetica, sans-serif;
+		background: #ccc ;
+		margin: 0;
+		height:100%;
+		width:100%;		
+		}
+		
+		.accessaid, h1 {
+			position: relative;
+			height: 0;
+			overflow: visible;
+		}
+		
+		#header {
+			position:absolute;
+			background: #333 url(/Header.jpg);
+			height: 10%;
+			width: 100%;
+		}
+		
+		#navigation {
+			position: absolute;
+			top: 10%;
+			margin-top: 0;
+			left: 0;
+			width: 15%;
+			height:167%;
+			background:#333;
+            
+		}
+		
+		#navigation ul {
+			margin: 0 0 10% 0;
+			padding: 0;
+			list-style: none;
+            
+		}
+		
+		#navigation ul a {
+			color: white;
+			text-decoration: none;
+			display: block;
+			background:#333;
+			border-left: 5px solid #BDBDBD;
+			padding: 0 5%;
+			margin: 0 1% 3% 10%;
+		}
+		
+		#navigation a:visited {
+			color: #E6E6E6;
+		}
+		
+		#navigation a:hover {
+			background: #6E6E6E;
+			border-color: white;
+		}
+		
+		#content {
+			position: absolute;
+			left:15%;
+			top:10%;
+			background: white;
+			padding: 3% 10% 10% 5%;
+			height:150%		
+			}
+		h2 {
+			font-size: 1.5em;
+			color: #036;
+		}
+		
+		h3 {
+			font-size: 1.25em;
+			color: #036;
+		}
+		
+		#content img {
+			width: 10%;
+			height: 15%;
+			padding: 0;
+			border: 1px solid #333;
+			float: right;
+			margin: 0 0 1% 1%;
+		}
+		
+		#container {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			border: solid #000;
+			border-width: 0 30%;
+			border-height:0 0;	
+			margin: auto;
+		}
+		#mlem
+		{
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			border: solid #000;
+			border-width: 0 30%;
+			border-height:0 0;	
+			margin: auto;
+		}
