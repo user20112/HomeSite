@@ -210,6 +210,43 @@ function get_all_messages()
 	return $retVal; 
 
 }
+function getrandomqoute()
+{
+	$conn; 
+
+	try{
+
+		$conn = ConnectToDataBase(); 
+
+	}catch(PDOException $ex){
+		return "open error: " . mysqli_connect_error() ; 
+	}
+
+
+	$sql = 'SELECT *FROM QouteTable ORDER BY RAND() LIMIT 1;';  
+
+	$proc_get_authors = $conn->prepare($sql);
+	
+	try{
+
+		$rs = $proc_get_authors->execute(); 
+	}catch(PDOException $ex){
+		$conn = null; 
+		return "Bad sql";
+	}
+
+	$rows = array(); 
+
+	while($row = $proc_get_authors->fetch(PDO::FETCH_ASSOC)){
+		$rows[] = $row; 
+	}
+
+	$retVal = json_encode($rows); 
+	$conn = null; 
+
+	return $retVal; 
+
+}
 function GetList()
 {
 	$conn; 

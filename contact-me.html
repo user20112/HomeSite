@@ -120,6 +120,33 @@
                 <div class="gap"></div>         
             </div>
         </section>
+		<section id="single-quote" class="divider-section"> 	            	        
+	            <div class="container">
+	            	<div class="gap"></div> 
+	                <div class="row">                        
+	                    <div class='col-md-offset-2 col-md-8 fade-up'>
+	                        <div class="carousel slide" data-ride="carousel" id="quote-carousel">
+	                            <div class="carousel-inner">
+	                                <div class="item active">
+	                                    <blockquote>
+	                                        <div class="row">
+	                                            <div class="col-sm-3 text-center">
+	                                                
+	                                            </div>
+	                                            <div class="col-sm-9">
+	                                                <p id="Qoute">He who has a why to live can bear almost any how.</p>
+	                                                <small id="Person">Friedrich Nietzsche</small>
+	                                            </div>
+	                                        </div>
+	                                    </blockquote>
+	                                </div>	                                
+	                            </div>                                     
+	                        </div> 
+	                    </div>
+	                </div>
+	                <div class="gap"></div>
+	      		</div>
+  		</section>
     </div>
 
    <div id="footer-wrapper">
@@ -157,5 +184,36 @@
     <script src="js/jquery.prettyPhoto.js"></script>   
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWDPCiH080dNCTYC-uprmLOn2mt2BMSUk&amp;sensor=true"></script> 
     <script src="js/init.js"></script>
+	<script>
+			window.onload = function() { GetQoute() };
+		var Qouterequest;
+		function GetQoute(){
+			Qouterequest = new XMLHttpRequest(); // message sent to server 
+			var fd = new FormData();  
+			fd.append("request", "GetQoute"); 
+			fd.append("ID", "100"); 
+			Qouterequest.onreadystatechange = QouteServerResponded; // setup callback (Asynchronous)
+			Qouterequest.open("POST", "php/request.php"); // prepare POST message
+			Qouterequest.send(fd); 
+			
+
+		}// end OnLoad
+
+	
+		function QouteServerResponded(){ // called when the server responds to message 
+			if(Qouterequest.readyState !== XMLHttpRequest.DONE) { return; } 
+			if(Qouterequest.status !== 200){ return; } // check for HTTP OK 
+			var json_arr; 
+			var json; 
+
+			try{ 
+				json_arr = JSON.parse(Qouterequest.responseText); 
+			}catch(ex){
+				alert(ex.message);  
+			}
+			document.getElementById("Qoute").innerHTML =json_arr[0].Qoute;
+			document.getElementById("Person").innerHTML =json_arr[0].Person;
+		}
+	</script>
 </body>
 </html>

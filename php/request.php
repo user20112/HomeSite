@@ -55,6 +55,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
 	case "GetMessages":
 		$result = get_all_messages(); 
 		break;
+	case "GetQoute":
+		$result = getrandomqoute(); 
+		break;
 	echo $result;
 	
 	default: 
