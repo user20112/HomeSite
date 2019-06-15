@@ -12,7 +12,7 @@ var moveCounter = 10;
 var ThinkingDepth;
 var scoredisplay;
 var Mlem;
-var aienable=false;
+var aienable=true;
 function setup() {
     htmlStuff();
     createCanvas(800, 800);
