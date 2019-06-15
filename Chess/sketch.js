@@ -1,58 +1,66 @@
-var test;
-var moving = false;
-var tileSize = 100;
-var movingPiece;
-var whitesMove = true;
-var moveCounter = 10;
 var images = [];
-var whiteAI = false;
-var blackAI = true;
-var ThinkingDepth;
-var depthPlus;
-var depthMinus;
 var tempMaxDepth = 3;
-
+var whiteAI = false;
+var depthMinus;
+var MoveState = false;
+var MoveStatePiece;
+var whitesMove = true;
+var tileSize = 100;
+var blackAI = true;
+var depthPlus;
+var moveCounter = 10;
+var ThinkingDepth;
+var scoredisplay;
+var Mlem;
+var aienable=false;
 function setup() {
     htmlStuff();
     createCanvas(800, 800);
-
-    for (var i = 1; i < 10; i++) {
+    for (var i = 1; i < 13; i++) {
+		if(i<10)
         images.push(loadImage("assets/2000px-Chess_Pieces_Sprite_0" + i + ".png"));
+		else
+		images.push(loadImage("assets/2000px-Chess_Pieces_Sprite_" + i + ".png"));
     }
-    for (var i = 10; i < 13; i++) {
-        images.push(loadImage("assets/2000px-Chess_Pieces_Sprite_" + i + ".png"));
-    }
-    test = new Board();
+    Mlem = new Board();
 }
-
+function mlem()
+{
+	aienable=!aienable;
+}
 function draw() {
-
     background(100);
     showGrid();
-    test.show();
-    runAIs();
+    Mlem.show();
+	if(aienable)
+	{
+		runAIs();
+	}
 }
 
 function runAIs() {
     maxDepth = tempMaxDepth;
-    if (!test.isDead() && !test.hasWon()) {
+    if (!Mlem.isDead() && !Mlem.hasWon()) {
         if (blackAI) {
             if (!whitesMove) {
                 if (moveCounter < 0) {
-                    test = maxFunAB(test, -400, 400, 0);
-                    print(test);
+                    Mlem = maxFunAB(Mlem, -400, 400, 0);
+                    print(Mlem);
                     whitesMove = true;
                     moveCounter = 10;
                 } else {
                     moveCounter--;
                 }
+			if(moveCounter==0)
+			if(CheckWhiteCheck(Mlem,0)>200)
+			window.alert("Check Mate");
             }
         }
         if (whiteAI) {
             if (whitesMove) {
                 if (moveCounter < 0) {
-                    test = minFunAB(test, -400, 400, 0);
-                    print("test", test);
+                    Mlem = minFunAB(Mlem, -400, 400, 0);
+                    print("Mlem", Mlem);
                     whitesMove = false;
                     moveCounter = 10;
                 } else {
@@ -82,41 +90,47 @@ function keyPressed() {}
 function mousePressed() {
     var x = floor(mouseX / tileSize);
     var y = floor(mouseY / tileSize);
-    if (!test.isDone()) {
-        if (!moving) {
-            movingPiece = test.getPieceAt(x, y);
-            if (movingPiece != null && movingPiece.white == whitesMove) {
+    if (!Mlem.isDone()) {
+        if (!MoveState) {
+            MoveStatePiece = Mlem.getPieceAt(x, y);
+            if (MoveStatePiece != null && MoveStatePiece.white == whitesMove) {
 
-                movingPiece.movingThisPiece = true;
+                MoveStatePiece.MoveStateThisPiece = true;
             } else {
                 return;
             }
         } else {
-            if (movingPiece.canMove(x, y, test)) {
-                movingPiece.move(x, y, test);
-                movingPiece.movingThisPiece = false;
+            if (MoveStatePiece.canMove(x, y, Mlem)) {
+                MoveStatePiece.move(x, y, Mlem);
+                MoveStatePiece.MoveStateThisPiece = false;
                 whitesMove = !whitesMove;
             } else {
-                movingPiece.movingThisPiece = false;
+                MoveStatePiece.MoveStateThisPiece = false;
             }
         }
-        moving = !moving;
+        MoveState = !MoveState;
     }
+	if(CheckWhiteCheck(Mlem,0)>200)
+	window.alert("You are in Check");
 }
 
 function Reset() {
-    test = new Board();
+    Mlem = new Board();
 }
 
 function htmlStuff() {
-	ThinkingDepth = createDiv("Thinking " + maxDepth + " moves ahead");
+	
+    ThinkingDepth = createDiv("Thinking " + maxDepth + " moves ahead");
+    scoredisplay = createDiv("Score " + 0);
     depthMinus = createButton("-");
     depthPlus = createButton('+');
     rset = createButton('Reset');
     rset.mousePressed(Reset);
+    EnableAI = createButton('EnableAI');
+    EnableAI.mousePressed(mlem);
     depthPlus.mousePressed(plusDepth);
-    depthMinus.mousePressed(minusDepth);    
-	createP(
+    depthMinus.mousePressed(minusDepth);
+    createP(
         ""
     )
 }

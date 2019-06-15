@@ -109,6 +109,18 @@ class Board {
         }
         return boards;
     }
+	GenerateCheckWhite() {
+        var boards = [];
+        for (var i = 0; i < this.blackPieces.length; i++) {
+            if (!this.blackPieces[i].taken) {
+                var tempArr = this.blackPieces[i].CheckIfcheck(this);
+                for (var j = 0; j < tempArr.length; j++) {
+                    boards.push(tempArr[j]);
+                }
+            }
+        }
+        return boards;
+    }
 
     setScore() {
         this.score = 0;

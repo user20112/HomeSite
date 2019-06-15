@@ -20,16 +20,25 @@ class Piece {
             } else {
                 image(this.pic, this.pixelPosition.x, this.pixelPosition.y, tileSize,
                     tileSize);
-
             }
         }
     }
+	CheckIfcheck(currentBoard){
+		var boards = [];
+        var moves = this.generateMoves(currentBoard);
+        for (var i = 0; i < moves.length; i++) {
+            boards[i] = currentBoard.clone();
+            boards[i].move(this.matrixPosition, moves[i]);
+        }
+
+        return boards;
+	}
     generateNewBoards(currentBoard) {
-        var boards = []; //all boards created from moving this piece
-        var moves = this.generateMoves(currentBoard); //all the posible moves this piece can do ,as vectors
-        for (var i = 0; i < moves.length; i++) { //for each move
-            boards[i] = currentBoard.clone(); //create a new board
-            boards[i].move(this.matrixPosition, moves[i]); //move this piece to the mvoe location
+        var boards = [];
+        var moves = this.generateMoves(currentBoard);
+        for (var i = 0; i < moves.length; i++) {
+            boards[i] = currentBoard.clone();
+            boards[i].move(this.matrixPosition, moves[i]);
         }
 
         return boards;
@@ -58,7 +67,6 @@ class Piece {
         var attacking = board.getPieceAt(x, y);
         if (attacking != null) {
             if (attacking.white == this.white) {
-                //if they are of the same player
                 return true;
             }
         }
@@ -111,7 +119,7 @@ class King extends Piece {
         } else {
             this.pic = images[6];
         }
-        this.value = 99;
+        this.value = 999;
     }
 
     clone() {
@@ -184,7 +192,6 @@ class Queen extends Piece {
 
             return true;
         }
-        //diagonal
         if (abs(x - this.matrixPosition.x) == abs(y - this.matrixPosition.y)) {
             if (this.moveThroughPieces(x, y, board)) {
                 return false;
@@ -196,8 +203,6 @@ class Queen extends Piece {
     }
     generateMoves(board) {
         var moves = [];
-
-        //generateHorizontal moves
         for (var i = 0; i < 8; i++) {
             var x = i;
             var y = this.matrixPosition.y;
@@ -209,7 +214,6 @@ class Queen extends Piece {
                 }
             }
         }
-        //generateVertical moves
         for (var i = 0; i < 8; i++) {
             var x = this.matrixPosition.x;;
             var y = i;
@@ -221,8 +225,6 @@ class Queen extends Piece {
                 }
             }
         }
-
-        //generateDiagonal Moves
         for (var i = 0; i < 8; i++) {
             var x = i;
             var y = this.matrixPosition.y - (this.matrixPosition.x - i);
@@ -250,7 +252,6 @@ class Queen extends Piece {
                 }
             }
         }
-        //print("Queen", moves);
         return moves;
     }
     clone() {
@@ -281,8 +282,6 @@ class Bishop extends Piece {
         if (this.attackingAllies(x, y, board)) {
             return false;
         }
-
-        //diagonal
         if (abs(x - this.matrixPosition.x) == abs(y - this.matrixPosition.y)) {
             if (this.moveThroughPieces(x, y, board)) {
                 return false;
@@ -295,7 +294,6 @@ class Bishop extends Piece {
 
     generateMoves(board) {
         var moves = [];
-        //generateDiagonal Moves
         for (var i = 0; i < 8; i++) {
             var x = i;
             var y = this.matrixPosition.y - (this.matrixPosition.x - i);
@@ -323,7 +321,6 @@ class Bishop extends Piece {
                 }
             }
         }
-        //print("Bishop", moves);
 
         return moves;
     }
@@ -368,8 +365,6 @@ class Rook extends Piece {
 
     generateMoves(board) {
         var moves = [];
-
-        //generateHorizontal moves
         for (var i = 0; i < 8; i++) {
             var x = i;
             var y = this.matrixPosition.y;
@@ -381,7 +376,6 @@ class Rook extends Piece {
                 }
             }
         }
-        //generateVertical moves
         for (var i = 0; i < 8; i++) {
             var x = this.matrixPosition.x;;
             var y = i;
@@ -393,7 +387,6 @@ class Rook extends Piece {
                 }
             }
         }
-        //print("Rook", moves);
 
         return moves;
 
@@ -498,7 +491,6 @@ class Pawn extends Piece {
         }
         var attacking = board.isPieceAt(x, y);
         if (attacking) {
-            //if attacking a player
             if (abs(x - this.matrixPosition.x) == abs(y - this.matrixPosition.y) &&
                 ((this.white && (y - this.matrixPosition.y) == -1) || (!this.white &&
                     (y - this.matrixPosition.y) == 1))) {

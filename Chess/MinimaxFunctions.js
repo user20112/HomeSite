@@ -5,7 +5,6 @@ function minFun(board, depth) {
         board.setScore();
         return board.score;
     }
-
     var boards = board.generateNewBoardsWhitesTurn();
     var lowestBoardNo = 0;
     var lowestScore = 100000;
@@ -20,6 +19,17 @@ function minFun(board, depth) {
     }
     return lowestScore;
 }
+function CheckWhiteCheck(board,depth){
+    var boards = board.GenerateCheckWhite();
+    var topScore = -100000;
+    for (var i = 0; i < boards.length; i++) {
+        var score = minFun(boards[i], depth + 1);
+        if (score > topScore) {
+            topScore = score;
+        }
+    }
+    return topScore;
+}
 
 function maxFun(board, depth) {
     if (depth >= maxDepth) {
@@ -29,7 +39,6 @@ function maxFun(board, depth) {
 
     var boards = board.generateNewBoardsBlacksTurn();
     if (depth == 0) {
-        //////print(boards);
     }
     var topBoardNo = 0;
     var topScore = -100000;
@@ -42,7 +51,6 @@ function maxFun(board, depth) {
     }
 
     if (depth == 0) {
-        ////print(topScore);
         return boards[topBoardNo];
     }
     return topScore;
@@ -80,14 +88,12 @@ function minFunAB(board, alpha, beta, depth) {
 
         var score = maxFunAB(boards[i], alpha, beta, depth + 1);
         if (depth == 0) {
-            //print(score, i, boards[i]);
         }
         if (score < lowestScore) {
             lowestBoardNo = i;
             lowestScore = score;
         } else {
             if (depth == 0 && score == lowestScore) {
-                //print("same as so i do what i want", i);
                 if (random(1) < 0.3) {
                     lowestBoardNo = i;
                 }
@@ -103,15 +109,10 @@ function minFunAB(board, alpha, beta, depth) {
     }
 
     if (depth == 0) {
-        ////print(lowestScore);
-        ////print("i made it here");
         return boards[lowestBoardNo];
     }
-    ////print("ohNo");
-    ////print(lowestScore);
     return lowestScore;
 }
-//---------------------------------------------------------------------------------------
 function maxFunAB(board, alpha, beta, depth) {
     if (depth >= maxDepth) {
         board.setScore();
@@ -138,7 +139,6 @@ function maxFunAB(board, alpha, beta, depth) {
 
     var boards = board.generateNewBoardsBlacksTurn();
     if (depth == 0) {
-        //////print(boards);
     }
     var topBoardNo = 0;
     var topScore = -300;
@@ -165,7 +165,6 @@ function maxFunAB(board, alpha, beta, depth) {
     }
 
     if (depth == 0) {
-        ////print(topScore);
         return boards[topBoardNo];
     }
     return topScore;
