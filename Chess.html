@@ -139,13 +139,14 @@
         <section id="bottom" class="">
             <div class="container">
                 <div class="row">
-                    <div>
-                        <h4>Not finding what you want?</h4>
-                        <p>Go to the Contact Info Page and send me a text or email with the suggestion you want i get very few and would implement it rather rapidly.</p>
-                    </div>
+                    <div >
+                        <h4>Footer Sample Text</h4>
+                        <p>This should not be shown and should load in the real text shortly</p>
+                    </div><!--/.col-md-3-->
+
                 </div>
             </div>
-        </section>
+        </section><!--/#bottom-->
 
         <footer id="footer" class="">
             <div class="container">
@@ -155,12 +156,17 @@
                     </div>
                     <div class="col-sm-6">
                         <ul class="pull-right">
-                            <li><a id="gototop" class="gototop" href="#"><i class="fa fa-chevron-up"></i></a></li>
+                            <li><a id="gototop" class="gototop" href="#"><i class="fa fa-chevron-up"></i></a></li><!--#gototop-->
                         </ul>
                     </div>
                 </div>
             </div>
-        </footer>
+        </footer><!--/#footer-->
+		<script>
+			$(function(){
+			$("#footer-wrapper").load("footer.html");
+			});
+			</script>
     </div>
     <script src="js/plugins.js"></script>
     <script src="js/bootstrap.min.js"></script>
