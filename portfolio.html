@@ -177,7 +177,7 @@
 			request = new XMLHttpRequest(); // message sent to server 
 			var fd = new FormData();  
 			fd.append("request", "GetProjects"); 
-			fd.append("ID", "100"); 
+			
 			request.onreadystatechange = ServerResponded; // setup callback (Asynchronous)
 			request.open("POST", "php/request.php"); // prepare POST message
 			request.send(fd);
@@ -231,7 +231,7 @@
 			Qouterequest = new XMLHttpRequest(); // message sent to server 
 			var fd = new FormData();  
 			fd.append("request", "GetQoute"); 
-			fd.append("ID", "100"); 
+			
 			Qouterequest.onreadystatechange = QouteServerResponded; // setup callback (Asynchronous)
 			Qouterequest.open("POST", "php/request.php"); // prepare POST message
 			Qouterequest.send(fd); 
