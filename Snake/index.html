@@ -1,62 +1,15 @@
-<div class="container">
-    <div class="navbar-header">
-		<canvas width="50" height="50" id="NavSnake"></canvas>
-        <a class="navbar-brand" href="index.html">
-            <h1>
-				<span class="pe-7s-gleam bounce-in"></span> Home
-			</h1>
-        </a>
-    </div>
-    <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a href="about-me.html">About Me</a>
-            </li>
-            <li>
-                <a href="services.html">Menero/other</a>
-            </li>
-            <li>
-                <a href="portfolio.html">Skills/Projects</a>
-            </li>
-            <!--
-			<li>
-				<a href="http://Devlinpaddock.online:5000">AspNetSite</a>
-			</li>
-			-->
-            <li>
-                <a href="MessageBoard.html">Message Board</a>
-            </li>
-            <li>
-                <a href="contact-me.html">Contact Info</a>
-            </li>
-            <li>
-                <a href="CubeWorld.html">CubeWorld</a>
-            </li>
-            <li>
-                <a href="Archive/index.html">Archive</a>
-            </li>
-            <li>
-                <a href="ArchiveIndex.html">Archived Tutorials</a>
-            </li>
-            <li>
-                <a href="Schedule.html">Schedule</a>
-            </li>
-            <li>
-                <a href="ProjectList.html">New Project List</a>
-            </li>
-            <li>
-                <a href="Resume.html">Resume</a>
-            </li>
-            <li>
-                <a href="Chess.html">Chess</a>
-            </li>
-        </ul>
-    </div>
-</div>
+<html>
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+<canvas width="300" height="300" id="SnakeAI"></canvas>
+</body>
+</html>
 <script>
-	var canvas = document.getElementById('NavSnake');
+	var canvas = document.getElementById('SnakeAI');
 var context = canvas.getContext('2d');
-var pixelSize=8;
+var pixelSize=20;
 var grid = canvas.width/pixelSize;
 var snake = {
     x: 0,

@@ -51,9 +51,6 @@ function runAIs() {
                 } else {
                     moveCounter--;
                 }
-			if(moveCounter==0)
-			if(CheckWhiteCheck(Mlem,0)>200)
-			window.alert("Check Mate");
             }
         }
         if (whiteAI) {
@@ -110,8 +107,6 @@ function mousePressed() {
         }
         MoveState = !MoveState;
     }
-	if(CheckWhiteCheck(Mlem,0)>200)
-	window.alert("You are in Check");
 }
 
 function Reset() {

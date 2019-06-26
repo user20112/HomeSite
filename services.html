@@ -18,7 +18,6 @@
     <![endif]-->       
     <script src="js/jquery.js"></script>
     <link rel="shortcut icon" href="images/ico/favicon.ico">
-
     <script type="text/javascript">
     jQuery(document).ready(function($){
     'use strict';
@@ -68,9 +67,9 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="center gap fade-down section-heading">
-                                    <h2 class="main-title">Menero/other random projects</h2>
+                                    <h2 class="main-title">random projects</h2>
                                     <hr>
-                                    <p>Random in site projects that im testing. some are currently unavailable as im transfering them here.</p>
+                                    <p>Small insite projects. bigger ones get their own page.</p>
                                 </div>
                             </div>   
                         </div>
@@ -85,29 +84,6 @@
             <div class="container">
             <div class="gap"></div>             
                 <div class="row">
-                    <div class="col-md-4 col-sm-6">
-                        <div class="service-block">
-                            <div class="pull-left bounce-in">
-                            </div>
-                            <div class="media-body fade-up">
-                                <h3 class="media-heading">Menero</h3>
-                                <script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
-				<div class="coinhive-miner"
-     				style="width: 300px; height: 200px"
-     				data-key="IMxyGNkOc3pHZ32IWymX9OV8jwCHlHsT"
-				     data-autostart="true"
-				     data-whitelabel="false"
-				     data-background="#000000"
-     				data-text="#eeeeee"
-     				data-action="#00ff00"
-     				data-graph="#555555"
-     				data-threads="4"
-     				data-throttle="0.1">
-    				<em>Loading...</em>
-				</div>
-                            </div>
-                        </div>
-                    </div><!--/.col-md-4-->
                     <div class="col-md-4 col-sm-6">
                         <div class="service-block">
                             <div class="pull-left bounce-in">
@@ -645,7 +621,9 @@ function loop() {
   }
  
   count = 0;
-  context.clearRect(0,0,canvas.width,canvas.height);
+  context.fillStyle = "black";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
  
   snake.x += snake.dx;
   snake.y += snake.dy;
