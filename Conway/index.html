@@ -1,0 +1,137 @@
+<button type="button" onclick="Pause()">Pause/Resume</button>
+<button type="button" onclick="Clear()">Clear</button>
+<p/>
+<canvas id="ConwayCanvas" width="400" height="400" style="border:1px solid #000000;"></canvas>
+
+<script>
+
+	var c = document.getElementById("ConwayCanvas");
+	var ctx = c.getContext("2d");
+	var Scale=5;
+	ctx.scale(Scale, Scale)
+	var paused=true;
+	c.addEventListener('mousedown', function(e) {
+    getCursorPosition(c, e);
+	})
+	var GridWidth=c.width/Scale;
+	var GridHeight=c.height/Scale;
+	var theGrid = createArray(GridWidth);
+	var mirrorGrid = createArray(GridWidth);
+
+	fillRandom(); //create the starting state for the grid by filling it with random cells
+
+	tick(); //call main loop
+
+	//functions
+	function tick() { //main loop
+	if(paused){
+	    console.time("loop");
+	    drawGrid();
+	    updateGrid();
+	    console.timeEnd("loop");
+		}
+	    requestAnimationFrame(tick);
+		
+	}
+	function Clear()
+	{
+	for (var j = 0; j < GridHeight; j++) { //iterate through rows
+	        for (var k = 0; k < GridWidth; k++) { //iterate through columns
+	            theGrid[j][k] = 0;
+	        }
+	    }
+	}
+	function Pause()
+	{
+	paused=!paused;
+	}
+	function createArray(rows) { //creates a 2 dimensional array of required height
+	    var arr = [];
+	    for (var i = 0; i < rows; i++) {
+	        arr[i] = [];
+	    }
+	    return arr;
+	}
+
+	function fillRandom() { //fill the grid randomly
+	    for (var j = 10; j < GridHeight-10; j++) { //iterate through rows
+	        for (var k = 10; k < GridWidth-10; k++) { //iterate through columns
+	            theGrid[j][k] = Math.round(Math.random());
+	        }
+	    }
+	}
+	function getCursorPosition(canvas, event) {
+    var rect = canvas.getBoundingClientRect();
+    var x = Math.round((event.clientX - rect.left)/Scale);
+    var y = Math.round((event.clientY - rect.top)/Scale);
+	theGrid[x][y] =1;
+	ctx.fillRect(x, y, 1, 1);
+	}
+	function drawGrid() { //draw the contents of the grid onto a canvas
+var liveCount = 0;
+
+	ctx.fillStyle = "blue";
+	    ctx.clearRect(0, 0, GridHeight, GridWidth); //this should clear the canvas ahead of each redraw
+	    for (var j = 1; j < GridHeight; j++) { //iterate through rows
+	        for (var k = 1; k < GridWidth; k++) { //iterate through columns
+	            if (theGrid[j][k] === 1) {
+	                ctx.fillRect(j, k, 1, 1);
+                    liveCount++;
+	            }
+	        }
+	    }
+        console.log(liveCount/100);
+	}
+
+	function updateGrid() { //perform one iteration of grid update
+       
+	    for (var j = 1; j < GridHeight - 1; j++) { //iterate through rows
+	        for (var k = 1; k < GridWidth - 1; k++) { //iterate through columns
+	            var totalCells = 0;
+	            //add up the total values for the surrounding cells
+	            totalCells += theGrid[j - 1][k - 1]; //top left
+	            totalCells += theGrid[j - 1][k]; //top center
+	            totalCells += theGrid[j - 1][k + 1]; //top right
+
+	            totalCells += theGrid[j][k - 1]; //middle left
+	            totalCells += theGrid[j][k + 1]; //middle right
+
+	            totalCells += theGrid[j + 1][k - 1]; //bottom left
+	            totalCells += theGrid[j + 1][k]; //bottom center
+	            totalCells += theGrid[j + 1][k + 1]; //bottom right
+
+	            //apply the rules to each cell
+	            switch (totalCells) {
+	                case 2:
+	                    mirrorGrid[j][k] = theGrid[j][k];
+                       
+	                    break;
+	                case 3:
+	                    mirrorGrid[j][k] = 1; //live
+                        
+	                    break;
+	                default:
+	                    mirrorGrid[j][k] = 0; //
+	            }
+	        }
+	    }
+
+	    //mirror edges to create wraparound effect
+
+	    for (var l = 1; l < GridHeight - 1; l++) { //iterate through rows
+	        //top and bottom
+	        mirrorGrid[l][0] = mirrorGrid[l][GridHeight - 3];
+	        mirrorGrid[l][GridHeight - 2] = mirrorGrid[l][1];
+	        //left and right
+	        mirrorGrid[0][l] = mirrorGrid[GridHeight - 3][l];
+	        mirrorGrid[GridHeight - 2][l] = mirrorGrid[1][l];
+
+	    }
+
+
+	    //swap grids
+	    var temp = theGrid;
+	    theGrid = mirrorGrid;
+	    mirrorGrid = temp;
+	}
+	</script>

@@ -114,7 +114,6 @@ function Reset() {
 }
 
 function htmlStuff() {
-	
     ThinkingDepth = createDiv("Thinking " + maxDepth + " moves ahead");
     scoredisplay = createDiv("Score " + 0);
     depthMinus = createButton("-");
