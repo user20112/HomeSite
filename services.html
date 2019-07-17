@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Services</title>
+    <title>Moving Web Thing</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/font-awesome.min.css" rel="stylesheet">
     <link href="css/pe-icons.css" rel="stylesheet">
@@ -67,9 +67,8 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="center gap fade-down section-heading">
-                                    <h2 class="main-title">random projects</h2>
+                                    <h2 class="main-title">Moving Web Thing</h2>
                                     <hr>
-                                    <p>Small insite projects. bigger ones get their own page.</p>
                                 </div>
                             </div>   
                         </div>
@@ -83,100 +82,26 @@
         <section id="services" class="white">
             <div class="container">
             <div class="gap"></div>             
-                <div class="row">
-                    <div class="col-md-4 col-sm-6">
-                        <div class="service-block">
-                            <div class="pull-left bounce-in">
-                            </div>
-                            <div class="media-body fade-up">
-                                <h3 class="media-heading">liquid thing</h3>
-                                <p>
-								<canvas id= "c"> </canvas>
-								<button id="reset">reset</button>
-								<div id="info">
-								<div id="top">
-								<a id="close" href="">close</a>
-								</div>
-								<p>
-								- Use the mouse to move the fluid.<br><br>
-								Putting large numbers will crash it<br><br>
-								<p>red</p><input id ="select1" type="number" name="points" step="1" value =1><br><br>
-								<p>green</p><input id ="select2" type="number" name="points" step="1" value =1><br><br>
-								<p>blue</p><input id ="select3" type="number" name="points" step="1" value =1><br><br>
-								</p>
-							</div>
-							</p>
-                            </div>
-                        </div>
-                    </div><!--/.col-md-4-->
-                    <div class="col-md-4 col-sm-6">
-                        <div class="service-block">
-                            <div class="pull-left bounce-in">
-                                
-                            </div>
-                            <div class="media-body fade-up">
-                                <h3 class="media-heading">snake </h3>
-                                <p> <canvas width="400" height="400" id="game"></canvas></p>
-                            </div>
-                        </div>
-                    </div><!--/.col-md-4-->
-                </div><!--/.row-->
                 <div class="gap"></div>
                 <div class="row">
-                    <div class="col-md-4 col-sm-6">
-                        <div class="service-block">
-                            <div class="pull-left bounce-in">
-                            </div>
-                            <div class="media-body fade-up">
-                                <h3 class="media-heading">send email</h3>
-                                <p> </form>
-							<form method="post" action="sendemail.php" 					id="contactform">
-                            <input type="text" name="name" id="name" 					placeholder="Name" />
-                            <input type="text" name="email" id="email" 					placeholder="Email" />
-                            <input readonly type="text" name="website" id="website" value ="Text" placeholder="Website"  />
-                            <textarea name="comments" id="comments" 					placeholder="Comments"></textarea>
-                            <input class="btn btn-outlined btn-primary" 				type="submit" name="submit" value="Submit" />
-                        </form>  </p>
-                            </div>
-                        </div>
-                    </div><!--/.col-md-4-->
-                    <div class="col-md-4 col-sm-6">
-                        <div class="service-block">
-                            <div class="pull-left bounce-in">
-                            </div>
-                            <div class="media-body fade-up">
-                                <h3 class="media-heading">send text </h3>
-                                <p><form method="post" action="sendemail.php" 					id="contactform">
-                            <input type="text" name="name" id="name" 					placeholder="Name" />
-                            <input type="text" name="email" id="email" 					placeholder="Email" />
-                            <input readonly type="text" name="website" id="website" value ="Text" placeholder="Website"  />
-                            <textarea name="comments" id="comments" 					placeholder="Comments"></textarea>
-                            <input class="btn btn-outlined btn-primary" 				type="submit" name="submit" value="Submit" />
-                        </form> </p>
-                            </div>
-                        </div>
-                    </div><!--/.col-md-4-->
-                    <div class="col-md-4 col-sm-6">
-                        <div class="service-block">
-                            <div class="pull-left bounce-in">
-                            </div>
-                            <div class="media-body fade-up">
-                                <h3 class="media-heading"></h3>
-                            </div>
-                        </div>
-                    </div><!--/.col-md-4-->
+                    		<div id="page-header">
+            <div role="banner"
+               style="background:url('Test1.jpg') center top;">
+                  <div class="particles_container" id="Nodes">    
+             </div>
+            </div>
+         </div>
+      <script type="text/javascript">
+         var headerbar_height = $('.headerbar').height();
+         $('.particles_container').css({'height': headerbar_height});
+         $('.site-description').css({'width': logo_width_fix});
+         $('canvas.nodes-js-canvas-el').css({'margin-top': -headerbar_height});
+      </script>            
+      <script src="js/Nodes.js"></script>
+      <script src="js/nodes.app.js"></script>
                 </div><!--/.row-->
             </div>
             <div class="gap"></div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="center gap fade-down section-heading">
-                        <h2 class="main-title"></h2>
-                        <hr>
-                        <p></p>
-                    </div>               
-                </div>
-            </div>
             <div class="container">     
         </section>
 		<section id="single-quote" class="divider-section"> 	            	        
